@@ -1,0 +1,76 @@
+import { supabase } from "@/config/supabase";
+
+/**
+ * Obtener todas las categorías
+ */
+export async function getCategories() {
+  const { data, error } = await supabase.from("category").select("*");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+/**
+ * Obtener una categoría por ID
+ */
+export async function getCategoryById(id: string) {
+  const { data, error } = await supabase
+    .from("category")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+/**
+ * Crear una nueva categoría
+ */
+export async function createCategory(
+  name: string,
+  description?: string,
+  icon?: string,
+) {
+  const { data, error } = await supabase
+    .from("category")
+    .insert([
+      {
+        name,
+        description,
+        icon,
+      },
+    ])
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+/**
+ * Crear múltiples categorías
+ */
+export async function createCategories(
+  categories: Array<{ name: string; description?: string; icon?: string }>,
+) {
+  const { data, error } = await supabase
+    .from("category")
+    .insert(categories)
+    .select();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
