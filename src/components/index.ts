@@ -1,4 +1,6 @@
 export { CategorySidebar } from "./CategorySidebar";
+export { CategoryCard } from "./CategoryCard";
+export { ConfirmDeleteModal } from "./ConfirmDeleteModal";
 export { FilterAndSort } from "./FilterAndSort";
 export { Header } from "./Header";
 export { ProductCard } from "./ProductCard";

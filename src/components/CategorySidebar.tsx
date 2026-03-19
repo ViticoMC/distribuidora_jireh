@@ -1,9 +1,9 @@
-import type { Category } from "@/types";
+import type { Category } from "../types";
 
 interface CategorySidebarProps {
   categories: Category[];
   selectedCategoryId: number | null;
-  onSelectCategory: (categoryId: number | null) => void;
+  onSelectCategory: (categoryId: number) => void;
   isLoading?: boolean;
 }
 
@@ -14,30 +14,33 @@ export function CategorySidebar({
   isLoading = false,
 }: CategorySidebarProps) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 max-w-[90vw]1 gap-3 m-4">
+
+
+    <div className="space-y-2 max-w-[90vw] mb-4 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
+
       {isLoading ? (
-        <div className="flex gap-2 md:gap-3 flex-wrap">
-          {[...Array(4)].map((_, i) => (
+        <>
+          {[...Array(6)].map((_, i) => (
             <div
               key={i}
-              className="h-12 w-24 bg-gray-300 rounded-lg animate-pulse shrink-0"
+              className="h-8 bg-gray-200 rounded animate-pulse"
             />
           ))}
-        </div>
+        </>
       ) : (
         categories.map((category) => (
           <button
             key={category.id}
             onClick={() => onSelectCategory(category.id)}
-            className={`p-2 rounded-lg transition-all text-sm md:text-base lg:text-sm font-semibold whitespace-nowrap md:whitespace-normal flex items-center gap-2 touch-none active:scale-95 ${selectedCategoryId === category.id
-              ? "bg-blue-600 text-white shadow-md"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            className={`w-full text-left px-4 py-2 rounded transition-colors text-sm font-medium flex items-center gap-2 ${selectedCategoryId === category.id
+              ? "bg-blue-100 text-blue-600"
+              : "text-gray-700 hover:bg-gray-100"
               }`}
           >
-            <span className="text-lg md:text-xl lg:text-lg">
+            <span className="text-lg">
               {category.icon || "📦"}
             </span>
-            <span className="text-xs md:text-sm ">{category.name}</span>
+            {category.name}
           </button>
         ))
       )}

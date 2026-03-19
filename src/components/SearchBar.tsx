@@ -7,7 +7,7 @@ interface SearchBarProps {
 
 export function SearchBar({ onSearch, placeholder = "Buscar productos..." }: SearchBarProps) {
     return (
-        <div className="relative w-full ">
+        <div className="relative w-full max-w-[90vw]">
             <input
                 type="text"
                 placeholder={placeholder}

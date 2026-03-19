@@ -11,8 +11,6 @@ export function AdminDashboard({ products, categories, isLoading }: AdminDashboa
     const totalProducts = products.length
     const activeProducts = products.filter(p => p.active).length
     const inactiveProducts = products.filter(p => !p.active).length
-    const totalValue = products.reduce((sum, p) => sum + (p.price * 1), 0)
-    const averagePrice = totalProducts > 0 ? totalValue / totalProducts : 0
 
     const stats = [
         {
@@ -74,26 +72,7 @@ export function AdminDashboard({ products, categories, isLoading }: AdminDashboa
                 })}
             </div>
 
-            {/* Información adicional */}
-            {totalProducts > 0 && (
-                <div className="mt-6 bg-white rounded-lg shadow-md p-6">
-                    <h2 className="text-lg font-semibold text-gray-900 mb-4">Información General</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <p className="text-gray-600 text-sm">Valor Total del Inventario</p>
-                            <p className="text-2xl font-bold text-gray-900">
-                                ${totalValue.toFixed(2)}
-                            </p>
-                        </div>
-                        <div>
-                            <p className="text-gray-600 text-sm">Precio Promedio</p>
-                            <p className="text-2xl font-bold text-gray-900">
-                                ${averagePrice.toFixed(2)}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            )}
+
         </div>
     )
 }

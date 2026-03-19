@@ -32,6 +32,12 @@ export function ProductGrid({
   return (
     <div className="w-full">
       {/* Grid de productos - Optimizado para tablets */}
+      {/* Información de paginación */}
+      {products.length > 0 && (
+        <div className="m-6 text-start text-2xl text-gray-600">
+          Mostrando {products.length} productos
+        </div>
+      )}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-3 md:gap-4 lg:gap-5">
         {products.map((product) => (
           <ProductCard
@@ -42,12 +48,7 @@ export function ProductGrid({
         ))}
       </div>
 
-      {/* Información de paginación */}
-      {products.length > 0 && (
-        <div className="mt-6 text-center text-sm text-gray-600">
-          Mostrando {products.length} productos
-        </div>
-      )}
+
     </div>
   );
 }

@@ -2,12 +2,10 @@ import { LogOut, Home } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { logout } from '@/services/authService'
+import { Link } from 'react-router-dom'
 
-interface AdminHeaderProps {
-    onLogoClick?: () => void
-}
 
-export function AdminHeader({ onLogoClick }: AdminHeaderProps) {
+export function AdminHeader() {
     const navigate = useNavigate()
     const { user } = useAuth()
 
@@ -26,16 +24,12 @@ export function AdminHeader({ onLogoClick }: AdminHeaderProps) {
         <header className="bg-white shadow-md sticky top-0 z-30">
             <div className="flex items-center justify-between px-4 md:px-6 py-4">
                 <div className="flex items-center gap-4">
-                    <button
-                        onClick={onLogoClick}
+                    <Link
+                        to="/"
                         className="flex items-center gap-2 hover:opacity-80 transition-opacity"
                     >
                         <Home className="w-6 h-6 md:w-8 md:h-8 text-blue-600" />
-                        <div>
-                            <h1 className="text-lg md:text-2xl font-bold text-gray-900">Jireh</h1>
-                            <p className="text-xs md:text-sm text-gray-600">Panel de Administración</p>
-                        </div>
-                    </button>
+                    </Link>
                 </div>
 
                 <div className="flex items-center gap-4">

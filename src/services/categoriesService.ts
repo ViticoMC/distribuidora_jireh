@@ -74,3 +74,35 @@ export async function createCategories(
 
   return data;
 }
+
+/**
+ * Eliminar una categoría por ID
+ */
+export async function deleteCategory(id: number) {
+  const { error } = await supabase.from("category").delete().eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+/**
+ * Actualizar una categoría
+ */
+export async function updateCategory(
+  id: number,
+  category: Partial<{ name: string; description?: string; icon?: string }>,
+) {
+  const { data, error } = await supabase
+    .from("category")
+    .update(category)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}

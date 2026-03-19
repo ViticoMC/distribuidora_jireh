@@ -1,7 +1,6 @@
-import { ShieldUser, Lock, LogOut } from "lucide-react";
+import { ShieldUser, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { logout } from "@/services/authService";
 
 
 export function Header() {
@@ -10,17 +9,6 @@ export function Header() {
 
     const handleAdminClick = () => {
         navigate("/admin");
-    };
-
-    const handleLogout = async () => {
-        if (window.confirm("¿Deseas cerrar sesión?")) {
-            try {
-                await logout();
-                window.location.reload();
-            } catch (error) {
-                console.error("Error logging out:", error);
-            }
-        }
     };
 
     return (
@@ -42,21 +30,11 @@ export function Header() {
                         {/* Botón Admin */}
                         <button
                             onClick={handleAdminClick}
-                            className="p-2 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 hover:from-purple-500 hover:to-purple-700 transition-colors flex items-center justify-center touch-none"
+                            className="p-2 rounded-full bg-linear-to-br from-blue-400 to-purple-600 hover:from-purple-500 hover:to-purple-700 transition-colors flex items-center justify-center touch-none"
                             aria-label="Panel de administración"
                             title="Panel de administración"
                         >
                             <ShieldUser className="w-7 h-7 text-white" />
-                        </button>
-
-                        {/* Botón Logout */}
-                        <button
-                            onClick={handleLogout}
-                            className="p-2 rounded-full bg-gradient-to-br from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 transition-colors flex items-center justify-center touch-none"
-                            aria-label="Cerrar sesión"
-                            title="Cerrar sesión"
-                        >
-                            <LogOut className="w-7 h-7 text-white" />
                         </button>
                     </>
                 ) : (
