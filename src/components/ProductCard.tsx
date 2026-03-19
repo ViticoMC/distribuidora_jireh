@@ -2,7 +2,6 @@ import { type Product } from '@/types'
 
 interface ProductCardProps {
   product: Product
-  onAddToCart?: (product: Product) => void
   onViewDetails?: (product: Product) => void
 }
 
@@ -41,17 +40,22 @@ export function ProductCard({ product, onViewDetails }: ProductCardProps) {
         </p>
 
         {/* Precio y Peso */}
-        <div className="mb-3 md:mb-4 space-y-1">
-          <div className="flex items-center justify-between">
-            <span className="text-2xl md:text-3xl font-bold text-blue-600">
+        <div className="  grid grid-cols-2 gap-3 p-1">
+          <div className="bg-blue-50 rounded-lg flex items-center justify-start p-1 gap-2">
+            <span className="text-gray-700 font-semibold">Precio:</span>
+            <span className=" font-bold text-blue-600">
               ${product.price.toFixed(2)}
             </span>
-            {product.weight && (
-              <span className="text-xs md:text-sm text-gray-500 bg-gray-100 px-2 md:px-3 py-1 md:py-2 rounded-lg">
+          </div>
+
+          {product.weight && (
+            <div className="bg-blue-50 rounded-lg flex items-center justify-start  p-1  gap-3">
+              <span className="text-gray-700 font-semibold">Peso:</span>
+              <span className="text-sm text-gray-600 font-medium">
                 {product.weight} kg
               </span>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         <button

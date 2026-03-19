@@ -6,3 +6,6 @@ export { ProductGrid } from "./ProductGrid";
 export { ProductModal } from "./ProductModal";
 export { ProtectedRoute } from "./ProtectedRoute";
 export { SearchBar } from "./SearchBar";
+
+// Admin components
+export * from "./admin";

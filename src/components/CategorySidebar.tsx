@@ -14,7 +14,7 @@ export function CategorySidebar({
   isLoading = false,
 }: CategorySidebarProps) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 max-w-[90vw] gap-3 m-4">
+    <div className="grid grid-cols-2 md:grid-cols-4 max-w-[90vw]1 gap-3 m-4">
       {isLoading ? (
         <div className="flex gap-2 md:gap-3 flex-wrap">
           {[...Array(4)].map((_, i) => (

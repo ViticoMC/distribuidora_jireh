@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { HomePage, LoginPage, NotFoundPage } from '@/pages'
+import { AdminPage, HomePage, LoginPage, NotFoundPage } from '@/pages'
 import { ProtectedRoute } from '@/components'
 
 export function AppRoutes() {
@@ -12,12 +12,15 @@ export function AppRoutes() {
                 {/* <Route path="/test" element={<TestPage />} /> */}
                 {/* <Route path="/seed" element={<SeedDataPage />} /> */}
 
-                {/* Protected routes */}
+                {/* Public home page - Catálogo de productos */}
+                <Route path="/" element={<HomePage />} />
+
+                {/* Protected Admin Route - ÚNICA ruta protegida */}
                 <Route
-                    path="/"
+                    path="/admin"
                     element={
                         <ProtectedRoute>
-                            <HomePage />
+                            <AdminPage />
                         </ProtectedRoute>
                     }
                 />
