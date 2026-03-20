@@ -71,14 +71,27 @@ export function AdminPage() {
         ima_url?: string
     }) => {
         try {
+            // Validar campos requeridos
+            if (!data.price || !data.category_id) {
+                throw new Error('Price and category are required')
+            }
+
+            // Preparar datos sin null values
+            const productData = {
+                ...data,
+                price: data.price,
+                category_id: data.category_id,
+                weight: data.weight || undefined,
+            }
+
             if (editingProduct) {
                 // Actualizar producto existente
-                await updateProduct(editingProduct.id, data)
+                await updateProduct(editingProduct.id, productData)
                 await loadData()
                 setEditingProduct(null)
             } else {
                 // Crear nuevo producto
-                await createProduct(data)
+                await createProduct(productData)
                 await loadData()
             }
         } catch (error) {

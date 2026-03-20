@@ -21,11 +21,11 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete, showView
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
         />
-        {!product.active && (
+        {/* {!product.active && (
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <span className="text-white font-bold text-lg md:text-xl">Agotado</span>
           </div>
-        )}
+        )} */}
       </div>
 
       {/* Contenido */}

@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import type { Product, Category } from "@/types";
+import type { Product } from "@/types";
 import { useHomeData } from "@/hooks/useHomeData";
 import { Header, ProductGrid, CategorySidebar, SearchBar, ProductModal } from "@/components";
 
@@ -19,9 +19,10 @@ export function HomePage() {
     const selectedCategory = categories.find(cat => cat.id === selectedCategoryId);
 
     const filteredProducts = products.filter((product) => {
+        const notAgotado = product.active; // Solo mostrar productos activos
         const matchesCategory = selectedCategoryId ? product.category_id === selectedCategoryId : true;
         const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-        return matchesCategory && matchesSearch;
+        return matchesCategory && matchesSearch && notAgotado;
     });
 
     // Ver detalles del producto

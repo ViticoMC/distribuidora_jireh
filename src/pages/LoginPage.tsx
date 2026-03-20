@@ -24,7 +24,7 @@ export function LoginPage() {
 
         try {
             await login(data)
-            navigate('/')
+            navigate('/admin')
         } catch (error) {
             setApiError(
                 error instanceof Error ? error.message : 'Error al iniciar sesión'
