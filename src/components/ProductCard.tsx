@@ -13,7 +13,7 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete, showView
   const isAdminMode = onEdit || onDelete
 
   return (
-    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-137.5  transform">
+    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-120 transform">
       {/* Imagen */}
       <div className="relative w-full h-72 bg-gray-200 overflow-hidden">
         <img
@@ -67,7 +67,7 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete, showView
             </div>
           </div>
 
-          {product.weight && (
+          {product.weight && product.weight > 0 && (
             <div className="bg-blue-50 rounded-lg flex items-center justify-start  p-1  gap-3">
               <span className="text-gray-700 font-semibold">Peso:</span>
               <span className="text-sm text-gray-600 font-medium">

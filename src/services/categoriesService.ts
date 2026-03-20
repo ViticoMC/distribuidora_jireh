@@ -37,6 +37,8 @@ export async function createCategory(
   name: string,
   description?: string,
   icon?: string,
+  img_url?: string,
+  img_id?: string,
 ) {
   const { data, error } = await supabase
     .from("category")
@@ -45,6 +47,8 @@ export async function createCategory(
         name,
         description,
         icon,
+        img_url,
+        img_id,
       },
     ])
     .select()
@@ -91,7 +95,13 @@ export async function deleteCategory(id: number) {
  */
 export async function updateCategory(
   id: number,
-  category: Partial<{ name: string; description?: string; icon?: string }>,
+  category: Partial<{
+    name: string;
+    description?: string;
+    icon?: string;
+    img_url?: string;
+    img_id?: string;
+  }>,
 ) {
   const { data, error } = await supabase
     .from("category")

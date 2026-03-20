@@ -62,12 +62,12 @@ export function AdminPage() {
     // Crear/Editar producto
     const handleSaveProduct = async (data: {
         name: string
-        description: string
-        price: number
-        weight: number
-        active: boolean
+        description?: string
+        price?: number
+        weight?: number | null
+        active?: boolean
         discount?: number
-        category_id: number
+        category_id?: number
         ima_url?: string
     }) => {
         try {
@@ -92,6 +92,8 @@ export function AdminPage() {
         name: string
         description?: string
         icon?: string
+        img_url?: string
+        img_id?: string
     }) => {
         try {
             if (editingCategory) {
@@ -101,7 +103,7 @@ export function AdminPage() {
                 setEditingCategory(null)
             } else {
                 // Crear nueva categoría
-                await createCategory(data.name, data.description, data.icon)
+                await createCategory(data.name, data.description, data.icon, data.img_url, data.img_id)
                 await loadData()
             }
         } catch (error) {

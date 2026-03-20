@@ -8,12 +8,12 @@ interface ProductFormProps {
     categories: Category[]
     onSubmit: (data: {
         name: string
-        description: string
-        price: number
-        weight: number
-        active: boolean
+        description?: string
+        price?: number
+        weight?: number | null
+        active?: boolean
         discount?: number
-        category_id: number
+        category_id?: number
         ima_url?: string
     }) => Promise<void>
     isLoading?: boolean
@@ -25,7 +25,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
             name: product?.name || '',
             description: product?.description || '',
             price: product?.price || 0,
-            weight: product?.weight || 0,
+            weight: product?.weight || null,
             active: product?.active !== undefined ? product.active : true,
             discount: product?.discount || 0,
             category_id: product?.category_id || (categories[0]?.id || 0),
@@ -44,7 +44,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                     name: product.name || '',
                     description: product.description || '',
                     price: product.price || 0,
-                    weight: product.weight || 0,
+                    weight: product.weight || null,
                     active: product.active !== undefined ? product.active : true,
                     discount: product.discount || 0,
                     category_id: product.category_id || (categories[0]?.id || 0),
@@ -57,7 +57,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                     name: '',
                     description: '',
                     price: 0,
-                    weight: 0,
+                    weight: null,
                     active: true,
                     discount: 0,
                     category_id: categories[0]?.id || 0,
@@ -116,26 +116,19 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                 setError('El nombre del producto es requerido')
                 return
             }
-            if (!formData.description.trim()) {
-                setError('La descripción es requerida')
-                return
-            }
-            if (formData.price <= 0) {
-                setError('El precio debe ser mayor a 0')
-                return
-            }
-            if (formData.weight <= 0) {
-                setError('El peso debe ser mayor a 0')
-                return
-            }
-            if (formData.category_id === 0) {
-                setError('Debes seleccionar una categoría')
+            if (!formData.ima_url.trim()) {
+                setError('La foto del producto es requerida')
                 return
             }
 
             try {
                 setIsSubmitting(true)
-                await onSubmit(formData)
+                // Enviar weight como null si es 0 o falsy
+                const dataToSubmit = {
+                    ...formData,
+                    weight: formData.weight && formData.weight > 0 ? formData.weight : null
+                }
+                await onSubmit(dataToSubmit)
                 setSuccess(product ? 'Producto actualizado correctamente' : 'Producto creado correctamente')
                 // Limpiar formulario después de guardar
                 if (!product) {
@@ -143,7 +136,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                         name: '',
                         description: '',
                         price: 0,
-                        weight: 0,
+                        weight: null,
                         active: true,
                         discount: 0,
                         category_id: categories[0]?.id || 0,
@@ -196,7 +189,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                     {/* Descripción */}
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Descripción *
+                            Descripción
                         </label>
                         <textarea
                             value={formData.description}
@@ -213,7 +206,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                         {/* Precio */}
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                Precio ($) *
+                                Precio ($)
                             </label>
                             <input
                                 type="number"
@@ -230,14 +223,14 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                         {/* Peso */}
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                Peso (kg) *
+                                Peso (kg)
                             </label>
                             <input
                                 type="number"
                                 step="0.001"
                                 min="0"
-                                value={formData.weight}
-                                onChange={(e) => setFormData({ ...formData, weight: parseFloat(e.target.value) })}
+                                value={formData.weight || ''}
+                                onChange={(e) => setFormData({ ...formData, weight: e.target.value ? parseFloat(e.target.value) : null })}
                                 placeholder="0.00"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                                 disabled={isSubmitting}
@@ -265,7 +258,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                         {/* Categoría */}
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                Categoría *
+                                Categoría
                             </label>
                             <select
                                 value={formData.category_id}
@@ -286,7 +279,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                     {/* Imagen del Producto */}
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Imagen del Producto
+                            Imagen del Producto *
                         </label>
 
                         {imagePreview ? (
@@ -334,7 +327,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                         )}
 
                         {/* Opción de URL manual */}
-                        <details className="mt-4">
+                        {/* <details className="mt-4">
                             <summary className="text-sm font-semibold text-gray-700 cursor-pointer hover:text-gray-900">
                                 Usar URL manual
                             </summary>
@@ -351,7 +344,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                                     disabled={isSubmitting}
                                 />
                             </div>
-                        </details>
+                        </details> */}
                     </div>
 
                     {/* Estado */}

@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import type { Product } from "@/types";
+import type { Product, Category } from "@/types";
 import { useHomeData } from "@/hooks/useHomeData";
 import { Header, ProductGrid, CategorySidebar, SearchBar, ProductModal } from "@/components";
 
@@ -14,6 +14,10 @@ export function HomePage() {
     const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+    // Obtener la categoría seleccionada
+    const selectedCategory = categories.find(cat => cat.id === selectedCategoryId);
+
     const filteredProducts = products.filter((product) => {
         const matchesCategory = selectedCategoryId ? product.category_id === selectedCategoryId : true;
         const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -44,6 +48,17 @@ export function HomePage() {
                     onSelectCategory={setSelectedCategoryId}
                     isLoading={isCategoriesLoading}
                 />
+
+                {/* Imagen de categoría seleccionada */}
+                {selectedCategory?.img_url && (
+                    <div className="mb-6 max-w-64 mx-auto">
+                        <img
+                            src={selectedCategory.img_url}
+                            alt={selectedCategory.name}
+                            className="w-full max-h-64 object-cover rounded-lg shadow-md"
+                        />
+                    </div>
+                )}
 
                 <div className=" max-w-[90vw]">
                     {/* Grid de productos */}

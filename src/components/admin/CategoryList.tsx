@@ -37,6 +37,7 @@ export function CategoryList({ categories, isLoading, onEdit, onDelete }: Catego
                 <table className="w-full">
                     <thead className="bg-gray-50 border-b border-gray-200">
                         <tr>
+                            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Imagen</th>
                             <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Ícono</th>
                             <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Nombre</th>
                             <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Descripción</th>
@@ -46,6 +47,19 @@ export function CategoryList({ categories, isLoading, onEdit, onDelete }: Catego
                     <tbody>
                         {categories.map((category) => (
                             <tr key={category.id} className="border-b border-gray-200 hover:bg-gray-50">
+                                <td className="px-6 py-4">
+                                    {category.img_url ? (
+                                        <img
+                                            src={category.img_url}
+                                            alt={category.name}
+                                            className="w-12 h-12 object-cover rounded"
+                                        />
+                                    ) : (
+                                        <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
+                                            <span className="text-xs text-gray-500">Sin imagen</span>
+                                        </div>
+                                    )}
+                                </td>
                                 <td className="px-6 py-4 text-lg">{category.icon || '📁'}</td>
                                 <td className="px-6 py-4 text-gray-900 font-medium">{category.name}</td>
                                 <td className="px-6 py-4 text-gray-600 text-sm max-w-xs truncate">

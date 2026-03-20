@@ -35,5 +35,7 @@ export interface Category {
   name: string;
   description?: string;
   icon?: string;
+  img_url?: string;
+  img_id?: string;
   created_at?: string;
 }

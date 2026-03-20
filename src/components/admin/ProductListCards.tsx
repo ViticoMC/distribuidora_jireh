@@ -120,7 +120,9 @@ export function ProductListCards({
                             categories.find((c) => c.id === parseInt(categoryId))?.name || 'Sin categoría'
                         return (
                             <div key={categoryId} className="space-y-3">
-                                <h3 className="text-lg font-semibold text-gray-900 px-2">{categoryName}</h3>
+                                <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg px-4 py-3 shadow-md">
+                                    <h3 className="text-2xl font-bold text-white">{categoryName}</h3>
+                                </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {categoryProducts.map((product) => (
                                         <div

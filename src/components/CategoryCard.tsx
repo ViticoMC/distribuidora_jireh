@@ -10,9 +10,20 @@ interface CategoryCardProps {
 export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) {
     return (
         <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 space-y-4">
-            {/* Ícono */}
-            <div className="w-16 h-16 rounded-lg bg-blue-50 flex items-center justify-center text-3xl">
-                {category.icon || '📁'}
+            {/* Imagen/Ícono */}
+            <div className="w-full h-40 rounded-lg bg-blue-50 flex items-center justify-center text-3xl overflow-hidden">
+                {category.img_url ? (
+                    <img
+                        src={category.img_url}
+                        alt={category.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                            e.currentTarget.style.display = 'none'
+                        }}
+                    />
+                ) : (
+                    <span>{category.icon || '📁'}</span>
+                )}
             </div>
 
             {/* Información */}
