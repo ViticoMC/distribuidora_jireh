@@ -235,7 +235,7 @@ export const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(
                 <div className="mt-6 flex gap-3">
                     <button
                         type="submit"
-                        disabled={isSubmitting || isLoading}
+                        disabled={isSubmitting || isLoading || isUploadingImage}
                         className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 rounded-lg transition-colors"
                     >
                         {isSubmitting ? 'Guardando...' : category ? 'Actualizar' : 'Crear'}

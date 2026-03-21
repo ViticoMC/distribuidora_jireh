@@ -5,12 +5,16 @@ interface ProductGridProps {
   products: Product[];
   isLoading?: boolean;
   onViewDetails?: (product: Product) => void;
+  onEdit?: (product: Product) => void
+  onDelete?: (product: Product) => void
 }
 
 export function ProductGrid({
   products,
   isLoading,
   onViewDetails,
+  onEdit,
+  onDelete
 }: ProductGridProps) {
 
   if (isLoading) {
@@ -35,15 +39,17 @@ export function ProductGrid({
       {/* Información de paginación */}
       {products.length > 0 && (
         <div className="m-6 text-start text-2xl text-gray-600">
-          Mostrando {products.length} productos
+          Mostrando {products.length} producto{products.length > 1 ? "s" : ""}
         </div>
       )}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-3 md:gap-4 lg:gap-5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2  gap-3 md:gap-4 lg:gap-5">
         {products.map((product) => (
           <ProductCard
             key={product.id}
             product={product}
             onViewDetails={onViewDetails}
+            onEdit={onEdit}
+            onDelete={onDelete}
           />
         ))}
       </div>

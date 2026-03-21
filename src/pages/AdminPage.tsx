@@ -1,63 +1,40 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
-import { BarChart3, Package, Folder, Search } from 'lucide-react'
+import { useState, useMemo, useRef } from 'react'
+import { BarChart3, Package, Folder } from 'lucide-react'
 import type { Product, Category } from '@/types'
-import { getProducts } from '@/services/productsService'
-import { getCategories } from '@/services/categoriesService'
-import { createProduct, deleteProduct, updateProduct } from '@/services/productsService'
-import { createCategory, deleteCategory, updateCategory } from '@/services/categoriesService'
 import {
     AdminHeader,
     AdminDashboard,
     ProductForm,
     CategoryForm,
 } from '@/components/admin'
-import { ProductCard, CategoryCard, ConfirmDeleteModal } from '@/components'
+import { CategoryCard, ConfirmDeleteModal, ProductGrid, SearchBar, CategorySidebar } from '@/components'
+import { useGetAllData } from '@/hooks/useGetAllData'
 
 type TabType = 'dashboard' | 'products' | 'categories'
 
 export function AdminPage() {
     const [activeTab, setActiveTab] = useState<TabType>('dashboard')
-    const [products, setProducts] = useState<Product[]>([])
-    const [categories, setCategories] = useState<Category[]>([])
-    const [isLoading, setIsLoading] = useState(true)
     const [editingProduct, setEditingProduct] = useState<Product | null>(null)
     const [editingCategory, setEditingCategory] = useState<Category | null>(null)
     const [searchProducts, setSearchProducts] = useState('')
     const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<number | null>(null)
-    const [searchCategories, setSearchCategories] = useState('')
     const [deleteModal, setDeleteModal] = useState<{
         isOpen: boolean
         type: 'product' | 'category' | null
         item: Product | Category | null
+        error: string | null
+        isDeleting: boolean
     }>({
         isOpen: false,
         type: null,
         item: null,
+        error: null,
+        isDeleting: false,
     })
     const productFormRef = useRef<HTMLFormElement>(null)
     const categoryFormRef = useRef<HTMLFormElement>(null)
 
-    // Cargar datos iniciales
-
-    useEffect(() => {
-        loadData()
-    }, [])
-
-    const loadData = async () => {
-        try {
-            setIsLoading(true)
-            const [productsData, categoriesData] = await Promise.all([
-                getProducts(),
-                getCategories(),
-            ])
-            setProducts(productsData || [])
-            setCategories(categoriesData || [])
-        } catch (error) {
-            console.error('Error loading data:', error)
-        } finally {
-            setIsLoading(false)
-        }
-    }
+    const { categories, isCategoriesLoading, products, isLoading, createProductAndRefresh, updateProductAndRefresh, deleteProductAndRefresh, createCategoryAndRefresh, updateCategoryAndRefresh, deleteCategoryAndRefresh } = useGetAllData()
 
     // Crear/Editar producto
     const handleSaveProduct = async (data: {
@@ -73,7 +50,7 @@ export function AdminPage() {
         try {
             // Validar campos requeridos
             if (!data.price || !data.category_id) {
-                throw new Error('Price and category are required')
+                throw new Error('Precio y categoría son requeridos')
             }
 
             // Preparar datos sin null values
@@ -86,13 +63,11 @@ export function AdminPage() {
 
             if (editingProduct) {
                 // Actualizar producto existente
-                await updateProduct(editingProduct.id, productData)
-                await loadData()
+                await updateProductAndRefresh(editingProduct.id, productData)
                 setEditingProduct(null)
             } else {
                 // Crear nuevo producto
-                await createProduct(productData)
-                await loadData()
+                await createProductAndRefresh(productData)
             }
         } catch (error) {
             console.error('Error saving product:', error)
@@ -111,13 +86,11 @@ export function AdminPage() {
         try {
             if (editingCategory) {
                 // Actualizar categoría existente
-                await updateCategory(editingCategory.id, data)
-                await loadData()
+                await updateCategoryAndRefresh(editingCategory.id, data)
                 setEditingCategory(null)
             } else {
                 // Crear nueva categoría
-                await createCategory(data.name, data.description, data.icon, data.img_url, data.img_id)
-                await loadData()
+                await createCategoryAndRefresh(data)
             }
         } catch (error) {
             console.error('Error saving category:', error)
@@ -131,6 +104,8 @@ export function AdminPage() {
             isOpen: true,
             type: 'product',
             item: product,
+            error: null,
+            isDeleting: false,
         })
     }
 
@@ -148,15 +123,19 @@ export function AdminPage() {
         const product = deleteModal.item as Product
         if (product) {
             try {
-                await deleteProduct(product.id)
-                await loadData()
+                setDeleteModal(prev => ({ ...prev, isDeleting: true, error: null }))
+                await deleteProductAndRefresh(product.id)
                 setDeleteModal({
                     isOpen: false,
                     type: null,
                     item: null,
+                    error: null,
+                    isDeleting: false,
                 })
             } catch (error) {
+                const errorMessage = error instanceof Error ? error.message : 'Error al eliminar el producto'
                 console.error('Error deleting product:', error)
+                setDeleteModal(prev => ({ ...prev, isDeleting: false, error: errorMessage }))
             }
         }
     }
@@ -167,6 +146,8 @@ export function AdminPage() {
             isOpen: true,
             type: 'category',
             item: category,
+            error: null,
+            isDeleting: false,
         })
     }
 
@@ -184,50 +165,37 @@ export function AdminPage() {
         const category = deleteModal.item as Category
         if (category) {
             try {
-                await deleteCategory(category.id)
-                await loadData()
+                setDeleteModal(prev => ({ ...prev, isDeleting: true, error: null }))
+                await deleteCategoryAndRefresh(category.id)
                 setDeleteModal({
                     isOpen: false,
                     type: null,
                     item: null,
+                    error: null,
+                    isDeleting: false,
                 })
             } catch (error) {
+                const errorMessage = error instanceof Error ? error.message : 'Error al eliminar la categoría'
                 console.error('Error deleting category:', error)
+                setDeleteModal(prev => ({ ...prev, isDeleting: false, error: errorMessage }))
             }
         }
     }
 
     // Filtrar y agrupar productos
     const filteredProductsBySearch = useMemo(() => {
-        return products.filter((product) => {
+        return products.filter((product: Product) => {
             const matchesSearch =
                 product.name.toLowerCase().includes(searchProducts.toLowerCase()) ||
                 product.description?.toLowerCase().includes(searchProducts.toLowerCase())
-            const matchesCategory = selectedCategoryFilter === null || product.category_id === selectedCategoryFilter
+            const matchesCategory = selectedCategoryFilter === null || product.category_id === selectedCategoryFilter || selectedCategoryFilter === 0
             return matchesSearch && matchesCategory
         })
     }, [products, searchProducts, selectedCategoryFilter])
 
-    const groupedProducts = useMemo(() => {
-        const groups: { [key: number]: Product[] } = {}
-        filteredProductsBySearch.forEach((product) => {
-            if (!groups[product.category_id]) {
-                groups[product.category_id] = []
-            }
-            groups[product.category_id].push(product)
-        })
-        return groups
-    }, [filteredProductsBySearch])
 
-    // Filtrar categorías
-    const filteredCategories = useMemo(() => {
-        return categories.filter((category) => {
-            return (
-                category.name.toLowerCase().includes(searchCategories.toLowerCase()) ||
-                category.description?.toLowerCase().includes(searchCategories.toLowerCase())
-            )
-        })
-    }, [categories, searchCategories])
+
+
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -280,56 +248,24 @@ export function AdminPage() {
                             <ProductForm
                                 ref={productFormRef}
                                 product={editingProduct || undefined}
-                                categories={categories}
+                                categories={categories.slice(1)}
                                 onSubmit={handleSaveProduct}
                                 isLoading={isLoading}
                             />
                         </div>
                         <div className="lg:col-span-2 space-y-6">
                             {/* Búsqueda y filtro */}
-                            <div className="bg-white rounded-lg shadow-md p-6 space-y-4">
-                                <h2 className="text-xl font-bold text-gray-900">
-                                    Productos ({filteredProductsBySearch.length})
-                                </h2>
-
-                                {/* Buscador */}
-                                <div className="relative">
-                                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                                    <input
-                                        type="text"
-                                        placeholder="Buscar productos..."
-                                        value={searchProducts}
-                                        onChange={(e) => setSearchProducts(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    />
-                                </div>
-
-                                {/* Filtro por categoría */}
-                                <div className="flex items-center gap-2 flex-wrap">
-                                    <span className="text-sm font-semibold text-gray-700">Categoría:</span>
-                                    <button
-                                        onClick={() => setSelectedCategoryFilter(null)}
-                                        className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${selectedCategoryFilter === null
-                                            ? 'bg-blue-600 text-white'
-                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                            }`}
-                                    >
-                                        Todas
-                                    </button>
-                                    {categories.map((category) => (
-                                        <button
-                                            key={category.id}
-                                            onClick={() => setSelectedCategoryFilter(category.id)}
-                                            className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${selectedCategoryFilter === category.id
-                                                ? 'bg-blue-600 text-white'
-                                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                                }`}
-                                        >
-                                            {category.name}
-                                        </button>
-                                    ))}
-                                </div>
+                            <div className="mb-6 md:mb-8 mx-auto">
+                                <SearchBar onSearch={setSearchProducts} />
                             </div>
+
+                            {/* Categorías - Horizontal en tablet */}
+                            <CategorySidebar
+                                categories={categories}
+                                selectedCategoryId={selectedCategoryFilter}
+                                onSelectCategory={setSelectedCategoryFilter}
+                                isLoading={isCategoriesLoading}
+                            />
 
                             {/* Productos por categoría */}
                             {filteredProductsBySearch.length === 0 ? (
@@ -338,27 +274,12 @@ export function AdminPage() {
                                     <p className="text-gray-500 text-lg">No se encontraron productos</p>
                                 </div>
                             ) : (
-                                <div className="space-y-6">
-                                    {Object.entries(groupedProducts).map(([categoryId, categoryProducts]) => {
-                                        const categoryName =
-                                            categories.find((c) => c.id === parseInt(categoryId))?.name || 'Sin categoría'
-                                        return (
-                                            <div key={categoryId} className="space-y-3">
-                                                <h3 className="text-lg font-semibold text-gray-900 px-2">{categoryName}</h3>
-                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                    {categoryProducts.map((product) => (
-                                                        <ProductCard
-                                                            key={product.id}
-                                                            product={product}
-                                                            onEdit={() => handleEditProduct(product)}
-                                                            onDelete={handleDeleteProduct}
-                                                        />
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )
-                                    })}
-                                </div>
+                                <ProductGrid
+                                    products={filteredProductsBySearch}
+                                    isLoading={isLoading}
+                                    onEdit={handleEditProduct}
+                                    onDelete={handleDeleteProduct}
+                                />
                             )}
                         </div>
                     </div>
@@ -377,32 +298,19 @@ export function AdminPage() {
                         </div>
                         <div className="lg:col-span-2 space-y-6">
                             {/* Búsqueda */}
-                            <div className="bg-white rounded-lg shadow-md p-6 space-y-4">
                                 <h2 className="text-xl font-bold text-gray-900">
-                                    Categorías ({filteredCategories.length})
+                                    Categorías ({categories.slice(1).length})
                                 </h2>
 
-                                <div className="relative">
-                                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                                    <input
-                                        type="text"
-                                        placeholder="Buscar categorías..."
-                                        value={searchCategories}
-                                        onChange={(e) => setSearchCategories(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    />
-                                </div>
-                            </div>
-
                             {/* Grid de categorías */}
-                            {filteredCategories.length === 0 ? (
+                            {categories.length === 0 ? (
                                 <div className="bg-white rounded-lg shadow-md p-12 text-center">
                                     <Folder className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                                     <p className="text-gray-500 text-lg">No se encontraron categorías</p>
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    {filteredCategories.map((category) => (
+                                <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
+                                    {categories.slice(1).map((category: Category) => (
                                         <CategoryCard
                                             key={category.id}
                                             category={category}
@@ -427,12 +335,16 @@ export function AdminPage() {
                         : '¿Estás seguro de que deseas eliminar esta categoría?'
                 }
                 itemName={(deleteModal.item as Product | Category)?.name}
+                error={deleteModal.error}
+                isLoading={deleteModal.isDeleting}
                 onConfirm={deleteModal.type === 'product' ? confirmDeleteProduct : confirmDeleteCategory}
                 onCancel={() =>
                     setDeleteModal({
                         isOpen: false,
                         type: null,
                         item: null,
+                        error: null,
+                        isDeleting: false,
                     })
                 }
             />

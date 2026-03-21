@@ -1,13 +1,13 @@
 
 import { useState } from "react";
 import type { Product } from "@/types";
-import { useHomeData } from "@/hooks/useHomeData";
+import { useGetAllData } from "@/hooks/useGetAllData";
 import { Header, ProductGrid, CategorySidebar, SearchBar, ProductModal } from "@/components";
 
 
 export function HomePage() {
     // Cargar datos de productos y categorías
-    const { products, categories, isLoading, isCategoriesLoading } = useHomeData();
+    const { products, categories, isLoading, isCategoriesLoading } = useGetAllData();
 
 
     // Estado local
@@ -52,11 +52,11 @@ export function HomePage() {
 
                 {/* Imagen de categoría seleccionada */}
                 {selectedCategory?.img_url && (
-                    <div className="mb-6 max-w-64 mx-auto">
+                    <div className="mb-6 md:mb-8 mx-auto">
                         <img
                             src={selectedCategory.img_url}
                             alt={selectedCategory.name}
-                            className="w-full max-h-64 object-cover rounded-lg shadow-md"
+                            className=" h-32 w-32 object-cover rounded-lg shadow-md"
                         />
                     </div>
                 )}

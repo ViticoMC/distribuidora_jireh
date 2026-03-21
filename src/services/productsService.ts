@@ -105,7 +105,11 @@ export async function deleteProduct(id: string) {
   const { error } = await supabase.from("product").delete().eq("id", id);
 
   if (error) {
-    throw new Error(error.message);
+    // Crear un error con la información completa del error de Supabase
+    const customError = new Error(error.message);
+    (customError as any).code = error.code;
+    (customError as any).details = error.details;
+    throw customError;
   }
 }
 

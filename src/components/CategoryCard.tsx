@@ -36,11 +36,11 @@ export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) 
 
             {/* Acciones */}
             {onEdit || onDelete ? (
-                <div className="flex gap-2 pt-4 border-t border-gray-200">
+                <div className="flex  flex-col gap-2   border-gray-200">
                     {onEdit && (
                         <button
                             onClick={() => onEdit(category)}
-                            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm font-medium"
+                            className="flex-1 flex items-center justify-center gap-2 p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm font-medium"
                         >
                             <Edit2 className="w-4 h-4" />
                             Editar
@@ -49,7 +49,7 @@ export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) 
                     {onDelete && (
                         <button
                             onClick={() => onDelete(category)}
-                            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm font-medium"
+                            className="flex-1 flex items-center justify-center gap-2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm font-medium"
                         >
                             <Trash2 className="w-4 h-4" />
                             Eliminar

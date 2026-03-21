@@ -35,10 +35,6 @@
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
 }
 
 /* Optimizaciones para tablets */
@@ -52,26 +48,7 @@
   }
 }
 
-/* Touch-friendly mejoras */
-button,
-a,
-input,
-select,
-textarea {
-  /* Mínimo de 44x44px para touch targets en móvil */
-  min-height: 44px;
-}
-
-@media (min-width: 768px) {
-  button,
-  a,
-  input,
-  select,
-  textarea {
-    /* Mínimo de 48x48px para touch targets en tablet */
-    min-height: 48px;
-  }
-}
+/*
 
 /* Scroll behavior smooth */
 html {
@@ -121,4 +98,3 @@ img {
 .aspect-video {
   aspect-ratio: 16 / 9;
 }
-

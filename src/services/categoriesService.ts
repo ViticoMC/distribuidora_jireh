@@ -86,7 +86,12 @@ export async function deleteCategory(id: number) {
   const { error } = await supabase.from("category").delete().eq("id", id);
 
   if (error) {
-    throw new Error(error.message);
+    // Crear un error con la información completa del error de Supabase
+    const customError = new Error(error.message);
+    // Adjuntar el código de error para poder identificarlo después
+    (customError as any).code = error.code;
+    (customError as any).details = error.details;
+    throw customError;
   }
 }
 

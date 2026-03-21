@@ -5,6 +5,7 @@ interface ConfirmDeleteModalProps {
     title: string
     message: string
     itemName?: string
+    error?: string | null
     onConfirm: () => void
     onCancel: () => void
     isLoading?: boolean
@@ -15,6 +16,7 @@ export function ConfirmDeleteModal({
     title,
     message,
     itemName,
+    error = null,
     onConfirm,
     onCancel,
     isLoading = false,
@@ -43,6 +45,11 @@ export function ConfirmDeleteModal({
                         {message}
                         {itemName && <strong className="block mt-2">"{itemName}"</strong>}
                     </p>
+                    {error && (
+                        <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                            <p className="text-red-700 text-sm font-medium">{error}</p>
+                        </div>
+                    )}
                     <p className="text-sm text-gray-500">Esta acción no se puede deshacer.</p>
                 </div>
 

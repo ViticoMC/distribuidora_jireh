@@ -158,17 +158,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                     {product ? 'Editar Producto' : 'Crear Nuevo Producto'}
                 </h2>
 
-                {error && (
-                    <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                        <p className="text-red-700 text-sm font-medium">{error}</p>
-                    </div>
-                )}
 
-                {success && (
-                    <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                        <p className="text-green-700 text-sm font-medium">{success}</p>
-                    </div>
-                )}
 
                 <div className="space-y-4">
                     {/* Nombre */}
@@ -362,12 +352,22 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                         </label>
                     </div>
                 </div>
+                {error && (
+                    <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <p className="text-red-700 text-sm font-medium">{error}</p>
+                    </div>
+                )}
 
+                {success && (
+                    <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <p className="text-green-700 text-sm font-medium">{success}</p>
+                    </div>
+                )}
                 {/* Botones */}
                 <div className="mt-6 flex gap-3">
                     <button
                         type="submit"
-                        disabled={isSubmitting || isLoading}
+                        disabled={isSubmitting || isLoading || isUploadingImage}
                         className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 rounded-lg transition-colors"
                     >
                         {isSubmitting ? 'Guardando...' : product ? 'Actualizar' : 'Crear'}
