@@ -4,6 +4,7 @@ import type { Product } from "@/types";
 import { useGetAllData } from "@/hooks/useGetAllData";
 import { Header, ProductGrid, CategorySidebar, SearchBar, ProductModal } from "@/components";
 import { useAuth } from "@/hooks/useAuth";
+import { ArrowUp } from "lucide-react";
 
 
 export function HomePage() {
@@ -48,8 +49,15 @@ export function HomePage() {
     };
 
     return (
-        <div className="min-h-screen bg-linear-to-br overflow-hidden from-gray-50 to-gray-100 pb-10" >
+        <div className="relative min-h-screen bg-linear-to-br overflow-hidden from-gray-50 to-gray-100 pb-10" >
             {/* Header */}
+            <button
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+
+                className="fixed cursor-pointer z-100  bottom-2 right-4 bg-green-600 rounded-xl  flex items-center justify-center w-8 h-8 ">
+                <ArrowUp className="w-5 h-5 text-white" />
+
+            </button>
             <Header user={user} />
 
             {/* Contenido principal */}

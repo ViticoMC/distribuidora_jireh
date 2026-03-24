@@ -19,7 +19,7 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete }: Produc
   return (
     <div
       onClick={() => handleViewDetails(product)}
-      className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 max-w-75  h-68  transform flex flex-col justify-between pb-2 p-3">
+      className="relative bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 max-w-75  h-68  transform flex flex-col justify-between pb-2 p-3">
       {/* Imagen */}
       <div>
         <div className="relative w-full h-40  overflow-hidden">
@@ -29,6 +29,14 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete }: Produc
             className="w-full h-40 object-cover transition-transform duration-300 hover:scale-105"
           />
         </div>
+        {
+          (product.discount && product.discount > 0) ? (
+            <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
+              Oferta
+            </div>
+          ) : null
+        }
+
 
         {/* Contenido */}
         <div className=" px-2 flex flex-col gap-1">
