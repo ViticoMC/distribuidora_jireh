@@ -1,12 +1,11 @@
 import { ShieldUser, Lock, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/config/supabase";
+import type { User } from "@/types";
 
 
-export function Header() {
+export function Header({ user }: { user?: User | null }) {
     const navigate = useNavigate();
-    const { user } = useAuth();
 
     const handleAdminClick = () => {
         navigate("/admin");

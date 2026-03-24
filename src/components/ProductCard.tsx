@@ -19,7 +19,7 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete }: Produc
   return (
     <div
       onClick={() => handleViewDetails(product)}
-      className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 max-w-75  h-76 transform flex flex-col justify-between pb-2 p-3">
+      className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 max-w-75  h-68  transform flex flex-col justify-between pb-2 p-3">
       {/* Imagen */}
       <div>
         <div className="relative w-full h-40  overflow-hidden">

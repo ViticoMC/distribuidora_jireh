@@ -1,7 +1,6 @@
-import { type Product } from '@/types'
+import { type Product, type User } from '@/types'
 import { X } from 'lucide-react'
 import { useState } from 'react'
-import { useAuth } from '@/hooks/useAuth'
 import { ProductCard } from './ProductCard'
 import { updateProduct } from '@/services/productsService'
 
@@ -9,10 +8,10 @@ interface ProductModalProps {
     product: Product
     onClose: () => void
     onProductUpdated?: (productId: string) => void
+    user: User | null
 }
 
-export function ProductModal({ product, onClose, onProductUpdated }: ProductModalProps) {
-    const { user } = useAuth()
+export function ProductModal({ product, onClose, onProductUpdated, user }: ProductModalProps) {
     const [isOutOfStock, setIsOutOfStock] = useState(product.stock === 0)
     const [isSaving, setIsSaving] = useState(false)
 

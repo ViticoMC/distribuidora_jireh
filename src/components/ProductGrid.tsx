@@ -42,10 +42,7 @@ export function ProductGrid({
           Mostrando {products.length} producto{products.length > 1 ? "s" : ""}
         </div>
       )}
-      <div className="gap-2"
-        style={{
-          gridColumn: "repeat(auto-fill, minmax(250px, 300px))"
-        }}
+      <div className="gap-2 w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
       >
         {products.map((product) => (
           <ProductCard

@@ -3,11 +3,13 @@ import { useState, useEffect, useMemo } from "react";
 import type { Product } from "@/types";
 import { useGetAllData } from "@/hooks/useGetAllData";
 import { Header, ProductGrid, CategorySidebar, SearchBar, ProductModal } from "@/components";
+import { useAuth } from "@/hooks/useAuth";
 
 
 export function HomePage() {
     // Cargar datos de productos y categorías
     const { products, categories, isLoading, isCategoriesLoading } = useGetAllData();
+    const { user } = useAuth();
 
 
     // Estado local
@@ -48,7 +50,7 @@ export function HomePage() {
     return (
         <div className="min-h-screen bg-linear-to-br overflow-hidden from-gray-50 to-gray-100 pb-10" >
             {/* Header */}
-            <Header />
+            <Header user={user} />
 
             {/* Contenido principal */}
             <main className="w-full m-4">
@@ -92,6 +94,7 @@ export function HomePage() {
                     product={selectedProduct}
                     onClose={() => setSelectedProduct(null)}
                     onProductUpdated={handleProductOutOfStock}
+                    user={user}
                 />
             )}
         </div>
