@@ -83,25 +83,6 @@ export async function createProducts(products: CreateProductData[]) {
  * Eliminar un producto por ID (incluyendo imagen de Cloudinary)
  */
 export async function deleteProduct(id: string) {
-  try {
-    // Obtener el producto para acceder a la URL de imagen
-    const product = await getProductById(id);
-
-    // Eliminar imagen de Cloudinary si existe
-    if (product?.ima_url) {
-      try {
-        const publicId = getPublicIdFromUrl(product.ima_url);
-        await deleteImage(publicId);
-      } catch (err) {
-        console.warn("Could not delete Cloudinary image:", err);
-        // Continuar con la eliminación del producto aunque falle la imagen
-      }
-    }
-  } catch (err) {
-    console.warn("Could not fetch product details for deletion:", err);
-    // Continuar con la eliminación aunque no podamos obtener los detalles
-  }
-
   const { error } = await supabase.from("product").delete().eq("id", id);
 
   if (error) {

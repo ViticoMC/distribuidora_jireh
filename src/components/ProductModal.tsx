@@ -25,8 +25,8 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
                 </div>
 
                 {/* Contenido - Usar ProductCard sin botón Ver */}
-                <div className="p-4">
-                    <ProductCard product={product} showViewButton={false} />
+                <div className="p-2">
+                    <ProductCard product={product} />
                 </div>
 
                 {/* Botón cerrar */}
