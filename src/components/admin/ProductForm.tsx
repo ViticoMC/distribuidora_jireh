@@ -17,10 +17,12 @@ interface ProductFormProps {
         ima_url?: string
     }) => Promise<void>
     isLoading?: boolean
+    onFormChange?: () => void
+    isModal?: boolean
 }
 
 export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
-    ({ product, categories, onSubmit, isLoading = false }, ref) => {
+    ({ product, categories, onSubmit, isLoading = false, isModal = false }, ref) => {
         const [formData, setFormData] = useState({
             name: product?.name || '',
             description: product?.description || '',
@@ -153,12 +155,12 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
         }
 
         return (
-            <form ref={ref} onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                    {product ? 'Editar Producto' : 'Crear Nuevo Producto'}
-                </h2>
-
-
+            <form ref={ref} onSubmit={handleSubmit} className={isModal ? "" : "bg-white rounded-lg shadow-md p-6"}>
+                {!isModal && (
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                        {product ? 'Editar Producto' : 'Crear Nuevo Producto'}
+                    </h2>
+                )}
 
                 <div className="space-y-4">
                     {/* Nombre */}
@@ -315,26 +317,6 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                                 <p className="text-blue-700 text-sm">Subiendo imagen...</p>
                             </div>
                         )}
-
-                        {/* Opción de URL manual */}
-                        {/* <details className="mt-4">
-                            <summary className="text-sm font-semibold text-gray-700 cursor-pointer hover:text-gray-900">
-                                Usar URL manual
-                            </summary>
-                            <div className="mt-3">
-                                <input
-                                    type="url"
-                                    value={formData.ima_url}
-                                    onChange={(e) => {
-                                        setFormData({ ...formData, ima_url: e.target.value })
-                                        setImagePreview(e.target.value)
-                                    }}
-                                    placeholder="https://ejemplo.com/imagen.jpg"
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-                                    disabled={isSubmitting}
-                                />
-                            </div>
-                        </details> */}
                     </div>
 
                     {/* Estado */}
@@ -352,6 +334,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                         </label>
                     </div>
                 </div>
+
                 {error && (
                     <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
                         <p className="text-red-700 text-sm font-medium">{error}</p>
@@ -363,6 +346,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                         <p className="text-green-700 text-sm font-medium">{success}</p>
                     </div>
                 )}
+
                 {/* Botones */}
                 <div className="mt-6 flex gap-3">
                     <button
@@ -376,3 +360,4 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
             </form>
         )
     })
+

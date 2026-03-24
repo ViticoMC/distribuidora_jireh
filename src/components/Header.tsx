@@ -1,6 +1,7 @@
-import { ShieldUser, Lock } from "lucide-react";
+import { ShieldUser, Lock, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/config/supabase";
 
 
 export function Header() {
@@ -9,6 +10,11 @@ export function Header() {
 
     const handleAdminClick = () => {
         navigate("/admin");
+    };
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        navigate("/");
     };
 
     return (
@@ -27,18 +33,26 @@ export function Header() {
             <div className="absolute top-3 right-3 flex gap-2">
                 {user ? (
                     <>
-                        {/* Botón Admin */}
-                        <button
-                            onClick={handleAdminClick}
-                            className="p-2 rounded-full bg-linear-to-br from-blue-400 to-purple-600 hover:from-purple-500 hover:to-purple-700 transition-colors flex items-center justify-center touch-none"
-                            aria-label="Panel de administración"
-                            title="Panel de administración"
+                        {user.role === "admin" && (
+                            <button
+                                onClick={handleAdminClick}
+                                className="p-2 rounded-full bg-linear-to-br from-blue-400 to-purple-600 hover:from-purple-500 hover:to-purple-700 transition-colors flex items-center justify-center touch-none"
+                                aria-label="Panel de administración"
+                                title="Panel de administración"
+                            >
+                                <ShieldUser className="w-7 h-7 text-white" />
+                            </button>
+                        )}
+                        < button
+                            onClick={handleLogout}
+                            className="p-2 rounded-full bg-linear-to-br from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 transition-colors flex items-center justify-center touch-none"
+                            aria-label="Cerrar sesión"
+                            title="Cerrar sesión"
                         >
-                            <ShieldUser className="w-7 h-7 text-white" />
+                            <LogOut className="w-7 h-7 text-white" />
                         </button>
                     </>
-                ) : (
-                    /* Botón Login */
+                ) :
                     <button
                         onClick={() => navigate("/login")}
                         className="p-2 rounded-full bg-linear-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 transition-colors flex items-center justify-center touch-none"
@@ -47,8 +61,8 @@ export function Header() {
                     >
                         <Lock className="w-7 h-7 text-white" />
                     </button>
-                )}
+                }
             </div>
-        </header>
+        </header >
     );
 }

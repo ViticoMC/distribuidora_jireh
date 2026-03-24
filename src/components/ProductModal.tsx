@@ -1,13 +1,46 @@
 import { type Product } from '@/types'
 import { X } from 'lucide-react'
+import { useState } from 'react'
+import { useAuth } from '@/hooks/useAuth'
 import { ProductCard } from './ProductCard'
+import { updateProduct } from '@/services/productsService'
 
 interface ProductModalProps {
     product: Product
     onClose: () => void
+    onProductUpdated?: (productId: string) => void
 }
 
-export function ProductModal({ product, onClose }: ProductModalProps) {
+export function ProductModal({ product, onClose, onProductUpdated }: ProductModalProps) {
+    const { user } = useAuth()
+    const [isOutOfStock, setIsOutOfStock] = useState(product.stock === 0)
+    const [isSaving, setIsSaving] = useState(false)
+
+    // Validar si el usuario puede marcar como agotado
+    const canMarkOutOfStock = user && (user.role === 'admin' || user.role === 'vendedor')
+
+    const handleMarkOutOfStock = () => {
+        setIsOutOfStock(!isOutOfStock)
+    }
+
+    const handleSave = async () => {
+        setIsSaving(true)
+        try {
+            await updateProduct(product.id, {
+                active: isOutOfStock ? false : true
+            })
+            if (isOutOfStock && onProductUpdated) {
+                onProductUpdated(product.id)
+            }
+            onClose()
+        } catch (error) {
+            console.error('Error al guardar:', error)
+            alert('Error al guardar el producto')
+        } finally {
+            setIsSaving(false)
+        }
+    }
+
     return (
         <div className="fixed inset-0 backdrop-blur-lg bg-opacity-50 z-50 flex items-center justify-center p-4">
             {/* Modal Container */}
@@ -25,18 +58,41 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
                 </div>
 
                 {/* Contenido - Usar ProductCard sin botón Ver */}
-                <div className="p-2">
+                <div className="p-2 flex justify-center">
                     <ProductCard product={product} />
                 </div>
 
-                {/* Botón cerrar */}
-                <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4">
-                    <button
-                        onClick={onClose}
-                        className="w-full bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold py-2 rounded-lg transition-colors"
-                    >
-                        Cerrar
-                    </button>
+                {/* Estado agotado */}
+                <div className="px-4 py-3 bg-gray-50 border-y border-gray-200">
+                    <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-gray-700">
+                            {isOutOfStock ? '❌ Agotado' : '✅ En stock'}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Botones de acción */}
+                <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 flex gap-2">
+                    {canMarkOutOfStock ? (
+                        <>
+                            <button
+                                onClick={handleMarkOutOfStock}
+                                className={`flex-1 font-bold py-2 rounded-lg transition-colors ${isOutOfStock
+                                    ? 'bg-yellow-100 hover:bg-yellow-200 text-yellow-900'
+                                    : 'bg-gray-200 hover:bg-gray-300 text-gray-900'
+                                    }`}
+                            >
+                                {isOutOfStock ? 'Desmarcar agotado' : 'Marcar agotado'}
+                            </button>
+                            <button
+                                onClick={handleSave}
+                                disabled={isSaving}
+                                className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-2 rounded-lg transition-colors"
+                            >
+                                {isSaving ? 'Guardando...' : 'Guardar'}
+                            </button>
+                        </>
+                    ) : null}
                 </div>
             </div>
         </div>

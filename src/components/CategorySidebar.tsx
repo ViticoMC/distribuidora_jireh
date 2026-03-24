@@ -14,35 +14,21 @@ export function CategorySidebar({
   isLoading = false,
 }: CategorySidebarProps) {
   return (
-
-
-    <div className=" max-w-[90vw] mb-3 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-
+    <div className="mb-3 max-w-[90vw]">
       {isLoading ? (
-        <>
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="h-8 bg-gray-200 rounded animate-pulse"
-            />
-          ))}
-        </>
+        <div className="h-10 bg-gray-200 rounded animate-pulse" />
       ) : (
-        categories.map((category) => (
-          <div
-            key={category.id}
-            onClick={() => onSelectCategory(category.id)}
-            className={`w-full text-left py-2 px-3 rounded transition-colors text-xs font-medium flex items-center gap-1 ${selectedCategoryId === category.id
-              ? "bg-blue-100 text-blue-600"
-              : "text-gray-700 hover:bg-gray-100"
-              }`}
-          >
-            <span className="text-sm">
-              {category.icon || "📦"}
-            </span>
-            {category.name}
-          </div>
-        ))
+        <select
+          value={selectedCategoryId || ""}
+          onChange={(e) => onSelectCategory(Number(e.target.value))}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+        >
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.icon || "📦"} {category.name}
+            </option>
+          ))}
+        </select>
       )}
     </div>
   );

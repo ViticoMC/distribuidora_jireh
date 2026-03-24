@@ -19,10 +19,10 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete }: Produc
   return (
     <div
       onClick={() => handleViewDetails(product)}
-      className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300   h-76 transform flex flex-col justify-between pb-2 p-3">
+      className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 max-w-75  h-76 transform flex flex-col justify-between pb-2 p-3">
       {/* Imagen */}
       <div>
-        <div className="relative w-full h-50  overflow-hidden">
+        <div className="relative w-full h-40  overflow-hidden">
           <img
             src={product.ima_url || 'https://via.placeholder.com/300x300?text=No+Image'}
             alt={product.name}
@@ -85,24 +85,28 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete }: Produc
       </div>
 
       {/* Botones */}
-      {isAdminMode && (
-        <div className="flex gap-2 h-auto pt-2">
-          <button
-            onClick={() => onEdit?.(product)}
-            className="h-4 p-3 flex items-center justify-center gap-2  bg-blue-600 hover:bg-blue-700  text-white font-semibold rounded-lg transition-colors text-sm"
-          >
-            <Edit2 className="w-4 h-4" />
-            Editar
-          </button>
-          <button
-            onClick={() => onDelete?.(product)}
-            className="h-4  flex items-center justify-center gap-2 p-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors text-sm"
-          >
-            <Trash2 className="w-4 h-4" />
-            Eliminar
-          </button>
+      {onEdit || onDelete ? (
+        <div className="flex   gap-1   border-gray-200">
+          {onEdit && (
+            <button
+              onClick={() => onEdit(product)}
+              className="flex-1 flex items-center justify-center gap-2 p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm font-medium"
+            >
+              <Edit2 className="w-4 h-4" />
+              Editar
+            </button>
+          )}
+          {onDelete && (
+            <button
+              onClick={() => onDelete(product)}
+              className="flex-1 flex items-center justify-center gap-2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm font-medium"
+            >
+              <Trash2 className="w-4 h-4" />
+              Eliminar
+            </button>
+          )}
         </div>
-      )}
+      ) : null}
     </div>
   )
 }

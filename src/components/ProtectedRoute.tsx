@@ -3,10 +3,14 @@ import { useAuth } from '@/hooks/useAuth'
 
 interface ProtectedRouteProps {
     children: React.ReactNode
+    requiredRole?: 'admin'
 }
 
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
+export function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
     const { user, loading } = useAuth()
+
+
+
 
     if (loading) {
         return (
@@ -20,6 +24,11 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
     if (!user) {
         return <Navigate to="/login" replace />
+    }
+
+    // Si se requiere un rol específico, validar
+    if (requiredRole && user.role !== requiredRole) {
+        return <Navigate to="/" replace />
     }
 
     return <>{children}</>

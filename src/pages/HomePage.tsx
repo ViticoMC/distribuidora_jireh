@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { Product } from "@/types";
 import { useGetAllData } from "@/hooks/useGetAllData";
 import { Header, ProductGrid, CategorySidebar, SearchBar, ProductModal } from "@/components";
@@ -14,16 +14,31 @@ export function HomePage() {
     const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    const [displayedProducts, setDisplayedProducts] = useState<Product[]>(products);
+
+    // Actualizar displayedProducts cuando cambien los productos principales
+    useEffect(() => {
+        setDisplayedProducts(products);
+    }, [products]);
 
     // Obtener la categoría seleccionada
     const selectedCategory = categories.find(cat => cat.id === selectedCategoryId);
 
-    const filteredProducts = products.filter((product) => {
-        const notAgotado = product.active; // Solo mostrar productos activos
-        const matchesCategory = selectedCategoryId ? product.category_id === selectedCategoryId : true;
-        const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-        return matchesCategory && matchesSearch && notAgotado;
-    });
+    const filteredProducts = useMemo(() => {
+        return displayedProducts.filter((product) => {
+            const notAgotado = product.active; // Solo mostrar productos activos
+            const matchesCategory = selectedCategoryId ? product.category_id === selectedCategoryId : true;
+            const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+            return matchesCategory && matchesSearch && notAgotado;
+        })
+    }, [displayedProducts, selectedCategoryId, searchTerm]);
+
+
+    const handleProductOutOfStock = (productId: string) => {
+        setDisplayedProducts(prev => prev.filter(p => p.id !== productId));
+    };
+
+    // Manejar cuando se marca un producto como agotado
 
     // Ver detalles del producto
     const handleViewDetails = (product: Product) => {
@@ -76,6 +91,7 @@ export function HomePage() {
                 <ProductModal
                     product={selectedProduct}
                     onClose={() => setSelectedProduct(null)}
+                    onProductUpdated={handleProductOutOfStock}
                 />
             )}
         </div>

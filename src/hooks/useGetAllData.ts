@@ -42,7 +42,7 @@ interface useGetAllDataReturn {
       category_id?: number;
       ima_url?: string;
       img_id?: string;
-    }
+    },
   ) => Promise<void>;
   deleteProductAndRefresh: (id: string) => Promise<void>;
   createCategoryAndRefresh: (data: {
@@ -60,7 +60,7 @@ interface useGetAllDataReturn {
       icon?: string;
       img_url?: string;
       img_id?: string;
-    }
+    },
   ) => Promise<void>;
   deleteCategoryAndRefresh: (id: number) => Promise<void>;
 }
@@ -119,7 +119,7 @@ export function useGetAllData(): useGetAllDataReturn {
       await createProduct(data);
       await loadProducts();
     },
-    [loadProducts]
+    [loadProducts],
   );
 
   // Actualizar producto y recargar datos
@@ -128,7 +128,7 @@ export function useGetAllData(): useGetAllDataReturn {
       await updateProduct(id, data);
       await loadProducts();
     },
-    [loadProducts]
+    [loadProducts],
   );
 
   // Eliminar producto y recargar datos
@@ -142,7 +142,7 @@ export function useGetAllData(): useGetAllDataReturn {
         throw new Error(translatedError);
       }
     },
-    [loadProducts]
+    [loadProducts],
   );
 
   // Crear categoría y recargar datos
@@ -159,23 +159,20 @@ export function useGetAllData(): useGetAllDataReturn {
         data.description,
         data.icon,
         data.img_url,
-        data.img_id
+        data.img_id,
       );
       await loadCategories();
     },
-    [loadCategories]
+    [loadCategories],
   );
 
   // Actualizar categoría y recargar datos
   const updateCategoryAndRefresh = useCallback(
-    async (
-      id: number,
-      data: Parameters<typeof updateCategory>[1]
-    ) => {
+    async (id: number, data: Parameters<typeof updateCategory>[1]) => {
       await updateCategory(id, data);
       await loadCategories();
     },
-    [loadCategories]
+    [loadCategories],
   );
 
   // Eliminar categoría y recargar datos
@@ -189,7 +186,7 @@ export function useGetAllData(): useGetAllDataReturn {
         throw new Error(translatedError);
       }
     },
-    [loadCategories]
+    [loadCategories],
   );
 
   return {

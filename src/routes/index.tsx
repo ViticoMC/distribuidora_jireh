@@ -15,11 +15,11 @@ export function AppRoutes() {
                 {/* Public home page - Catálogo de productos */}
                 <Route path="/" element={<HomePage />} />
 
-                {/* Protected Admin Route - ÚNICA ruta protegida */}
+                {/* Protected Admin Route - Solo para admin */}
                 <Route
                     path="/admin"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute requiredRole="admin">
                             <AdminPage />
                         </ProtectedRoute>
                     }

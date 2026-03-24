@@ -7,10 +7,12 @@ interface CategoryFormProps {
     category?: Category
     onSubmit: (data: { name: string; description?: string; icon?: string; img_url?: string; img_id?: string }) => Promise<void>
     isLoading?: boolean
+    onFormChange?: () => void
+    isModal?: boolean
 }
 
 export const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(
-    ({ category, onSubmit, isLoading = false }, ref) => {
+    ({ category, onSubmit, isLoading = false, onFormChange, isModal = false }, ref) => {
         const [formData, setFormData] = useState({
             name: category?.name || '',
             description: category?.description || '',
@@ -116,10 +118,12 @@ export const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(
         }
 
         return (
-            <form ref={ref} onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                    {category ? 'Editar Categoría' : 'Crear Nueva Categoría'}
-                </h2>
+            <form ref={ref} onSubmit={handleSubmit} className={isModal ? "" : "bg-white rounded-lg shadow-md p-6"}>
+                {!isModal && (
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                        {category ? 'Editar Categoría' : 'Crear Nueva Categoría'}
+                    </h2>
+                )}
 
                 {error && (
                     <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -142,7 +146,10 @@ export const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(
                         <input
                             type="text"
                             value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            onChange={(e) => {
+                                setFormData({ ...formData, name: e.target.value })
+                                onFormChange?.()
+                            }}
                             placeholder="Ej: Electrónica, Ropa, Alimentos"
                             className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             disabled={isSubmitting}
@@ -156,7 +163,10 @@ export const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(
                         </label>
                         <textarea
                             value={formData.description}
-                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                            onChange={(e) => {
+                                setFormData({ ...formData, description: e.target.value })
+                                onFormChange?.()
+                            }}
                             placeholder="Descripción de la categoría..."
                             rows={3}
                             className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -172,7 +182,10 @@ export const CategoryForm = forwardRef<HTMLFormElement, CategoryFormProps>(
                         <input
                             type="text"
                             value={formData.icon}
-                            onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                            onChange={(e) => {
+                                setFormData({ ...formData, icon: e.target.value })
+                                onFormChange?.()
+                            }}
                             placeholder="Ej: 📱, 👕, 🍎"
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             disabled={isSubmitting}

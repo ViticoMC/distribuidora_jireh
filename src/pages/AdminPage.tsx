@@ -1,11 +1,11 @@
-import { useState, useMemo, useRef } from 'react'
-import { BarChart3, Package, Folder } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { BarChart3, Package, Folder, Plus } from 'lucide-react'
 import type { Product, Category } from '@/types'
 import {
     AdminHeader,
     AdminDashboard,
-    ProductForm,
-    CategoryForm,
+    ProductFormModal,
+    CategoryFormModal,
 } from '@/components/admin'
 import { CategoryCard, ConfirmDeleteModal, ProductGrid, SearchBar, CategorySidebar } from '@/components'
 import { useGetAllData } from '@/hooks/useGetAllData'
@@ -15,7 +15,9 @@ type TabType = 'dashboard' | 'products' | 'categories'
 export function AdminPage() {
     const [activeTab, setActiveTab] = useState<TabType>('dashboard')
     const [editingProduct, setEditingProduct] = useState<Product | null>(null)
+    const [isProductModalOpen, setIsProductModalOpen] = useState(false)
     const [editingCategory, setEditingCategory] = useState<Category | null>(null)
+    const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false)
     const [searchProducts, setSearchProducts] = useState('')
     const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<number | null>(null)
     const [deleteModal, setDeleteModal] = useState<{
@@ -31,8 +33,28 @@ export function AdminPage() {
         error: null,
         isDeleting: false,
     })
-    const productFormRef = useRef<HTMLFormElement>(null)
-    const categoryFormRef = useRef<HTMLFormElement>(null)
+
+    // Manejar apertura de modal
+    const handleOpenProductModal = () => {
+        setEditingProduct(null)
+        setIsProductModalOpen(true)
+    }
+
+    const handleCloseProductModal = () => {
+        setEditingProduct(null)
+        setIsProductModalOpen(false)
+    }
+
+    // Manejar apertura de modal de categoría
+    const handleOpenCategoryModal = () => {
+        setEditingCategory(null)
+        setIsCategoryModalOpen(true)
+    }
+
+    const handleCloseCategoryModal = () => {
+        setEditingCategory(null)
+        setIsCategoryModalOpen(false)
+    }
 
     const { categories, isCategoriesLoading, products, isLoading, createProductAndRefresh, updateProductAndRefresh, deleteProductAndRefresh, createCategoryAndRefresh, updateCategoryAndRefresh, deleteCategoryAndRefresh } = useGetAllData()
 
@@ -64,10 +86,11 @@ export function AdminPage() {
             if (editingProduct) {
                 // Actualizar producto existente
                 await updateProductAndRefresh(editingProduct.id, productData)
-                setEditingProduct(null)
+                handleCloseProductModal()
             } else {
                 // Crear nuevo producto
                 await createProductAndRefresh(productData)
+                handleCloseProductModal()
             }
         } catch (error) {
             console.error('Error saving product:', error)
@@ -87,10 +110,11 @@ export function AdminPage() {
             if (editingCategory) {
                 // Actualizar categoría existente
                 await updateCategoryAndRefresh(editingCategory.id, data)
-                setEditingCategory(null)
+                handleCloseCategoryModal()
             } else {
                 // Crear nueva categoría
                 await createCategoryAndRefresh(data)
+                handleCloseCategoryModal()
             }
         } catch (error) {
             console.error('Error saving category:', error)
@@ -112,10 +136,7 @@ export function AdminPage() {
     // Editar producto
     const handleEditProduct = (product: Product) => {
         setEditingProduct(product)
-        // Hacer scroll al formulario después de que se actualice el estado
-        setTimeout(() => {
-            productFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }, 0)
+        setIsProductModalOpen(true)
     }
 
     // Confirmar eliminación de producto
@@ -154,10 +175,7 @@ export function AdminPage() {
     // Editar categoría
     const handleEditCategory = (category: Category) => {
         setEditingCategory(category)
-        // Hacer scroll al formulario después de que se actualice el estado
-        setTimeout(() => {
-            categoryFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }, 0)
+        setIsCategoryModalOpen(true)
     }
 
     // Confirmar eliminación de categoría
@@ -243,84 +261,81 @@ export function AdminPage() {
 
                 {/* Products Tab */}
                 {activeTab === 'products' && (
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div className="lg:col-span-1">
-                            <ProductForm
-                                ref={productFormRef}
-                                product={editingProduct || undefined}
-                                categories={categories.slice(1)}
-                                onSubmit={handleSaveProduct}
-                                isLoading={isLoading}
-                            />
+                    <div className="space-y-6">
+                        {/* Botón Crear Nuevo Producto */}
+                        <button
+                            onClick={handleOpenProductModal}
+                            className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors shadow-md"
+                        >
+                            <Plus size={20} />
+                            Crear Nuevo Producto
+                        </button>
+
+                        {/* Búsqueda y filtro */}
+                        <div className="mb-6 md:mb-8">
+                            <SearchBar onSearch={setSearchProducts} />
                         </div>
-                        <div className="lg:col-span-2 space-y-6">
-                            {/* Búsqueda y filtro */}
-                            <div className="mb-6 md:mb-8 mx-auto">
-                                <SearchBar onSearch={setSearchProducts} />
+
+                        {/* Categorías - Horizontal en tablet */}
+                        <CategorySidebar
+                            categories={categories}
+                            selectedCategoryId={selectedCategoryFilter}
+                            onSelectCategory={setSelectedCategoryFilter}
+                            isLoading={isCategoriesLoading}
+                        />
+
+                        {/* Productos por categoría */}
+                        {filteredProductsBySearch.length === 0 ? (
+                            <div className="bg-white rounded-lg shadow-md p-12 text-center">
+                                <Package className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                                <p className="text-gray-500 text-lg">No se encontraron productos</p>
                             </div>
-
-                            {/* Categorías - Horizontal en tablet */}
-                            <CategorySidebar
-                                categories={categories}
-                                selectedCategoryId={selectedCategoryFilter}
-                                onSelectCategory={setSelectedCategoryFilter}
-                                isLoading={isCategoriesLoading}
+                        ) : (
+                            <ProductGrid
+                                products={filteredProductsBySearch}
+                                isLoading={isLoading}
+                                onEdit={handleEditProduct}
+                                onDelete={handleDeleteProduct}
                             />
-
-                            {/* Productos por categoría */}
-                            {filteredProductsBySearch.length === 0 ? (
-                                <div className="bg-white rounded-lg shadow-md p-12 text-center">
-                                    <Package className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                                    <p className="text-gray-500 text-lg">No se encontraron productos</p>
-                                </div>
-                            ) : (
-                                <ProductGrid
-                                    products={filteredProductsBySearch}
-                                    isLoading={isLoading}
-                                    onEdit={handleEditProduct}
-                                    onDelete={handleDeleteProduct}
-                                />
-                            )}
-                        </div>
+                        )}
                     </div>
                 )}
 
                 {/* Categories Tab */}
                 {activeTab === 'categories' && (
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div className="lg:col-span-1">
-                            <CategoryForm
-                                ref={categoryFormRef}
-                                category={editingCategory || undefined}
-                                onSubmit={handleSaveCategory}
-                                isLoading={isLoading}
-                            />
-                        </div>
-                        <div className="lg:col-span-2 space-y-6">
-                            {/* Búsqueda */}
-                                <h2 className="text-xl font-bold text-gray-900">
-                                    Categorías ({categories.slice(1).length})
-                                </h2>
+                    <div className="space-y-6">
+                        {/* Botón Crear Nueva Categoría */}
+                        <button
+                            onClick={handleOpenCategoryModal}
+                            className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors shadow-md"
+                        >
+                            <Plus size={20} />
+                            Crear Nueva Categoría
+                        </button>
 
-                            {/* Grid de categorías */}
-                            {categories.length === 0 ? (
-                                <div className="bg-white rounded-lg shadow-md p-12 text-center">
-                                    <Folder className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                                    <p className="text-gray-500 text-lg">No se encontraron categorías</p>
-                                </div>
-                            ) : (
-                                <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
-                                    {categories.slice(1).map((category: Category) => (
-                                        <CategoryCard
-                                            key={category.id}
-                                            category={category}
-                                            onEdit={() => handleEditCategory(category)}
-                                            onDelete={handleDeleteCategory}
-                                        />
-                                    ))}
-                                </div>
-                            )}
-                        </div>
+                        {/* Título */}
+                        <h2 className="text-xl font-bold text-gray-900">
+                            Categorías ({categories.slice(1).length})
+                        </h2>
+
+                        {/* Grid de categorías */}
+                        {categories.length === 0 ? (
+                            <div className="bg-white rounded-lg shadow-md p-12 text-center">
+                                <Folder className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                                <p className="text-gray-500 text-lg">No se encontraron categorías</p>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {categories.slice(1).map((category: Category) => (
+                                    <CategoryCard
+                                        key={category.id}
+                                        category={category}
+                                        onEdit={() => handleEditCategory(category)}
+                                        onDelete={handleDeleteCategory}
+                                    />
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
             </main>
@@ -347,6 +362,25 @@ export function AdminPage() {
                         isDeleting: false,
                     })
                 }
+            />
+
+            {/* Modal de formulario de producto */}
+            <ProductFormModal
+                isOpen={isProductModalOpen}
+                product={editingProduct || undefined}
+                categories={categories.slice(1)}
+                onClose={handleCloseProductModal}
+                onSubmit={handleSaveProduct}
+                isLoading={isLoading}
+            />
+
+            {/* Modal de formulario de categoría */}
+            <CategoryFormModal
+                isOpen={isCategoryModalOpen}
+                category={editingCategory || undefined}
+                onClose={handleCloseCategoryModal}
+                onSubmit={handleSaveCategory}
+                isLoading={isLoading}
             />
         </div>
     )
