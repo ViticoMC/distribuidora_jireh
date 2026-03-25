@@ -32,13 +32,11 @@ export function ProductFormModal({
     isLoading = false,
 }: ProductFormModalProps) {
     const [showConfirmClose, setShowConfirmClose] = useState(false)
-    const [formHasChanges, setFormHasChanges] = useState(false)
 
     // Limpiar estado cuando se cierra la modal
     useEffect(() => {
         if (!isOpen) {
             setShowConfirmClose(false)
-            setFormHasChanges(false)
         }
     }, [isOpen])
 
@@ -48,7 +46,6 @@ export function ProductFormModal({
 
     const handleConfirmClose = () => {
         setShowConfirmClose(false)
-        setFormHasChanges(false)
         onClose()
     }
 
@@ -81,10 +78,8 @@ export function ProductFormModal({
                             categories={categories}
                             onSubmit={async (data) => {
                                 await onSubmit(data)
-                                setFormHasChanges(false)
                                 onClose()
                             }}
-                            onFormChange={() => setFormHasChanges(true)}
                             isLoading={isLoading}
                             isModal={true}
                         />
