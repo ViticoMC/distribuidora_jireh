@@ -1,13 +1,25 @@
 import { type Category } from '@/types'
-import { Edit2, Trash2 } from 'lucide-react'
+import { Edit2, Trash2, ChevronUp, ChevronDown } from 'lucide-react'
 
 interface CategoryCardProps {
     category: Category
     onEdit?: (category: Category) => void
     onDelete?: (category: Category) => void
+    onMoveUp?: (category: Category) => void
+    onMoveDown?: (category: Category) => void
+    isFirstItem?: boolean
+    isLastItem?: boolean
 }
 
-export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) {
+export function CategoryCard({
+    category,
+    onEdit,
+    onDelete,
+    onMoveUp,
+    onMoveDown,
+    isFirstItem = false,
+    isLastItem = false
+}: CategoryCardProps) {
     return (
         <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 space-y-4">
             {/* Imagen/Ícono */}
@@ -35,28 +47,59 @@ export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) 
             </div>
 
             {/* Acciones */}
-            {onEdit || onDelete ? (
-                <div className="flex  flex-col gap-2   border-gray-200">
-                    {onEdit && (
-                        <button
-                            onClick={() => onEdit(category)}
-                            className="flex-1 flex items-center justify-center gap-2 p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm font-medium"
-                        >
-                            <Edit2 className="w-4 h-4" />
-                            Editar
-                        </button>
-                    )}
-                    {onDelete && (
-                        <button
-                            onClick={() => onDelete(category)}
-                            className="flex-1 flex items-center justify-center gap-2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm font-medium"
-                        >
-                            <Trash2 className="w-4 h-4" />
-                            Eliminar
-                        </button>
-                    )}
+            <div className="space-y-2 pt-2 border-t border-gray-200">
+                {/* Botones de ordenamiento */}
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => onMoveUp?.(category)}
+                        disabled={isFirstItem}
+                        className={`flex-1 flex items-center justify-center gap-2 p-2 rounded-lg transition-colors text-sm font-medium ${isFirstItem
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                : 'bg-green-100 hover:bg-green-200 text-green-700'
+                            }`}
+                        title={isFirstItem ? 'Ya es la primera categoría' : 'Mover arriba'}
+                    >
+                        <ChevronUp className="w-4 h-4" />
+                        Arriba
+                    </button>
+                    <button
+                        onClick={() => onMoveDown?.(category)}
+                        disabled={isLastItem}
+                        className={`flex-1 flex items-center justify-center gap-2 p-2 rounded-lg transition-colors text-sm font-medium ${isLastItem
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                : 'bg-green-100 hover:bg-green-200 text-green-700'
+                            }`}
+                        title={isLastItem ? 'Ya es la última categoría' : 'Mover abajo'}
+                    >
+                        <ChevronDown className="w-4 h-4" />
+                        Abajo
+                    </button>
                 </div>
-            ) : null}
+
+                {/* Botones de edición y eliminación */}
+                {onEdit || onDelete ? (
+                    <div className="flex gap-2">
+                        {onEdit && (
+                            <button
+                                onClick={() => onEdit(category)}
+                                className="flex-1 flex items-center justify-center gap-2 p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm font-medium"
+                            >
+                                <Edit2 className="w-4 h-4" />
+                                Editar
+                            </button>
+                        )}
+                        {onDelete && (
+                            <button
+                                onClick={() => onDelete(category)}
+                                className="flex-1 flex items-center justify-center gap-2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm font-medium"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                                Eliminar
+                            </button>
+                        )}
+                    </div>
+                ) : null}
+            </div>
         </div>
     )
 }

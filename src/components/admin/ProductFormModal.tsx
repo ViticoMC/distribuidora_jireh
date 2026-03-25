@@ -14,6 +14,7 @@ interface ProductFormModalProps {
         description?: string
         price?: number
         weight?: number | null
+        und_weigth?: string
         active?: boolean
         discount?: number
         category_id?: number
@@ -42,11 +43,7 @@ export function ProductFormModal({
     }, [isOpen])
 
     const handleClose = () => {
-        if (formHasChanges) {
-            setShowConfirmClose(true)
-        } else {
-            onClose()
-        }
+        setShowConfirmClose(true)
     }
 
     const handleConfirmClose = () => {

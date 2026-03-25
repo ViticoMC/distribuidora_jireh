@@ -19,7 +19,7 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete }: Produc
   return (
     <div
       onClick={() => handleViewDetails(product)}
-      className="relative bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 max-w-75  h-68  transform flex flex-col justify-between pb-2 p-3">
+      className="relative bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 max-w-75  h-74  transform flex flex-col justify-between pb-2 p-3">
       {/* Imagen */}
       <div>
         <div className="relative w-full h-40  overflow-hidden">
@@ -63,7 +63,7 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete }: Produc
               <>
                 <div className="relative inline-block">
                   <span className="line-through text-gray-500 text-sm">
-                    ${product.price.toFixed(2)}
+                    ${product.price}
                   </span>
                   <div className="absolute -top-4 -left-1 bg-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-bold shadow-lg whitespace-nowrap">
                     -{product.discount}%
@@ -75,7 +75,7 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete }: Produc
               </>
             ) : (
               <span className="font-bold text-blue-600">
-                ${product.price.toFixed(2)}
+                ${product.price}
               </span>
             )}
           </div>
@@ -86,7 +86,7 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete }: Produc
           <div className="bg-blue-50 rounded-lg text-sm flex items-center justify-start  p-1  gap-3">
             <span className="text-gray-700 font-semibold">Peso:</span>
             <span className="text-sm text-gray-600 font-medium">
-              {product.weight} kg
+              {product.weight} {product.und_weigth || 'kg'}
             </span>
           </div>
         )}

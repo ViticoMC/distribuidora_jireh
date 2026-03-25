@@ -22,6 +22,7 @@ export interface Product {
   description?: string;
   price: number;
   weight?: number;
+  und_weigth?: string;
   active?: boolean;
   discount?: number;
   category_id: number;
@@ -39,4 +40,5 @@ export interface Category {
   img_url?: string;
   img_id?: string;
   created_at?: string;
+  orden?: number;
 }

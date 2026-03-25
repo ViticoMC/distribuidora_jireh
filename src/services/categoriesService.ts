@@ -106,6 +106,7 @@ export async function updateCategory(
     icon?: string;
     img_url?: string;
     img_id?: string;
+    orden?: number;
   }>,
 ) {
   const { data, error } = await supabase

@@ -27,14 +27,27 @@ export function HomePage() {
     // Obtener la categoría seleccionada
     const selectedCategory = categories.find(cat => cat.id === selectedCategoryId);
 
+    const normalizeString = (str: string) =>
+        str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+
     const filteredProducts = useMemo(() => {
-        return displayedProducts.filter((product) => {
+        const normalizedSearch = normalizeString(searchTerm)
+        const filtered = displayedProducts.filter((product) => {
             const notAgotado = product.active; // Solo mostrar productos activos
             const matchesCategory = selectedCategoryId ? product.category_id === selectedCategoryId : true;
-            const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesSearch = normalizeString(product.name).includes(normalizedSearch);
             return matchesCategory && matchesSearch && notAgotado;
         })
-    }, [displayedProducts, selectedCategoryId, searchTerm]);
+
+        // Ordenar por categoría según el orden definido
+        return filtered.sort((a, b) => {
+            const categoryA = categories.find(c => c.id === a.category_id)
+            const categoryB = categories.find(c => c.id === b.category_id)
+            const ordenA = categoryA?.orden ?? Number.MAX_VALUE
+            const ordenB = categoryB?.orden ?? Number.MAX_VALUE
+            return ordenA - ordenB
+        })
+    }, [displayedProducts, selectedCategoryId, searchTerm, categories]);
 
 
     const handleProductOutOfStock = (productId: string) => {
@@ -54,8 +67,8 @@ export function HomePage() {
             <button
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
 
-                className="fixed cursor-pointer z-100  bottom-2 right-4 bg-green-600 rounded-xl  flex items-center justify-center w-8 h-8 ">
-                <ArrowUp className="w-5 h-5 text-white" />
+                className="fixed cursor-pointer z-100  bottom-2 right-4 bg-green-600 rounded-xl  flex items-center justify-center w-12 h-12 ">
+                <ArrowUp className="w-8 h-8 text-white" />
 
             </button>
             <Header user={user} />

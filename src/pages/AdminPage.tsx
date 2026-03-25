@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { BarChart3, Package, Folder, Plus } from 'lucide-react'
 import type { Product, Category } from '@/types'
 import {
@@ -13,6 +13,7 @@ import { useGetAllData } from '@/hooks/useGetAllData'
 type TabType = 'dashboard' | 'products' | 'categories'
 
 export function AdminPage() {
+    const scrollPositionRef = useRef(0)
     const [activeTab, setActiveTab] = useState<TabType>('dashboard')
     const [editingProduct, setEditingProduct] = useState<Product | null>(null)
     const [isProductModalOpen, setIsProductModalOpen] = useState(false)
@@ -64,6 +65,7 @@ export function AdminPage() {
         description?: string
         price?: number
         weight?: number | null
+        und_weigth?: string
         active?: boolean
         discount?: number
         category_id?: number
@@ -81,6 +83,7 @@ export function AdminPage() {
                 price: data.price,
                 category_id: data.category_id,
                 weight: data.weight || undefined,
+                und_weigth: data.und_weigth || 'kg',
             }
 
             if (editingProduct) {
@@ -132,6 +135,23 @@ export function AdminPage() {
             isDeleting: false,
         })
     }
+
+    // Prevenir scroll cuando el modal está abierto y guardar posición
+    useEffect(() => {
+        if (isProductModalOpen || isCategoryModalOpen || deleteModal.isOpen) {
+            // Guardar posición actual antes de bloquear scroll
+            scrollPositionRef.current = window.scrollY
+            document.documentElement.style.overflow = 'hidden'
+        } else {
+            // Restaurar scroll a la posición guardada
+            document.documentElement.style.overflow = ''
+            window.scrollTo(0, scrollPositionRef.current)
+        }
+
+        return () => {
+            document.documentElement.style.overflow = ''
+        }
+    }, [isProductModalOpen, isCategoryModalOpen, deleteModal.isOpen])
 
     // Editar producto
     const handleEditProduct = (product: Product) => {
@@ -201,18 +221,64 @@ export function AdminPage() {
     }
 
     // Filtrar y agrupar productos
+    const normalizeString = (str: string) =>
+        str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+
     const filteredProductsBySearch = useMemo(() => {
         return products.filter((product: Product) => {
+            const normalizedSearch = normalizeString(searchProducts)
             const matchesSearch =
-                product.name.toLowerCase().includes(searchProducts.toLowerCase()) ||
-                product.description?.toLowerCase().includes(searchProducts.toLowerCase())
+                normalizeString(product.name).includes(normalizedSearch) ||
+                normalizeString(product.description || '').includes(normalizedSearch)
             const matchesCategory = selectedCategoryFilter === null || product.category_id === selectedCategoryFilter || selectedCategoryFilter === 0
             return matchesSearch && matchesCategory
         })
     }, [products, searchProducts, selectedCategoryFilter])
 
+    // Ordenar categorías por el campo orden
+    const sortedCategories = useMemo(() => {
+        return [...categories].sort((a, b) => {
+            const ordenA = a.orden ?? Number.MAX_VALUE
+            const ordenB = b.orden ?? Number.MAX_VALUE
+            return ordenA - ordenB
+        })
+    }, [categories])
 
+    // Mover categoría arriba
+    const handleMoveUp = async (category: Category) => {
+        try {
+            const currentIndex = sortedCategories.findIndex(c => c.id === category.id)
+            if (currentIndex <= 0) return
 
+            const categoryAbove = sortedCategories[currentIndex - 1]
+            const currentOrden = category.orden ?? currentIndex
+            const aboveOrden = categoryAbove.orden ?? currentIndex - 1
+
+            // Intercambiar órdenes
+            await updateCategoryAndRefresh(category.id, { orden: aboveOrden })
+            await updateCategoryAndRefresh(categoryAbove.id, { orden: currentOrden })
+        } catch (error) {
+            console.error('Error moving category up:', error)
+        }
+    }
+
+    // Mover categoría abajo
+    const handleMoveDown = async (category: Category) => {
+        try {
+            const currentIndex = sortedCategories.findIndex(c => c.id === category.id)
+            if (currentIndex >= sortedCategories.length - 1) return
+
+            const categoryBelow = sortedCategories[currentIndex + 1]
+            const currentOrden = category.orden ?? currentIndex
+            const belowOrden = categoryBelow.orden ?? currentIndex + 1
+
+            // Intercambiar órdenes
+            await updateCategoryAndRefresh(category.id, { orden: belowOrden })
+            await updateCategoryAndRefresh(categoryBelow.id, { orden: currentOrden })
+        } catch (error) {
+            console.error('Error moving category down:', error)
+        }
+    }
 
 
     return (
@@ -326,14 +392,24 @@ export function AdminPage() {
                             </div>
                         ) : (
                             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {categories.slice(1).map((category: Category) => (
-                                    <CategoryCard
-                                        key={category.id}
-                                        category={category}
-                                        onEdit={() => handleEditCategory(category)}
-                                        onDelete={handleDeleteCategory}
-                                    />
-                                ))}
+                                {sortedCategories.map((category: Category, index: number) => {
+                                    if(category.id === 0) return null // Omitir categoría "Todas" en el listados
+                                    return (
+
+                                        <CategoryCard
+                                            key={category.id}
+                                            category={category}
+                                            onEdit={() => handleEditCategory(category)}
+                                            onDelete={handleDeleteCategory}
+                                            onMoveUp={() => handleMoveUp(category)}
+                                            onMoveDown={() => handleMoveDown(category)}
+                                            isFirstItem={index === 0}
+                                            isLastItem={index === sortedCategories.slice(1).length - 1}
+                                        />
+
+                                    )
+                                }
+                                )}
                             </div>
                         )}
                     </div>

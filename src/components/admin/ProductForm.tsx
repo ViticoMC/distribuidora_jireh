@@ -11,6 +11,7 @@ interface ProductFormProps {
         description?: string
         price?: number
         weight?: number | null
+        und_weigth?: string
         active?: boolean
         discount?: number
         category_id?: number
@@ -28,6 +29,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
             description: product?.description || '',
             price: product?.price || 0,
             weight: product?.weight || null,
+            und_weigth: product?.und_weigth || 'kg',
             active: product?.active !== undefined ? product.active : true,
             discount: product?.discount || 0,
             category_id: product?.category_id || (categories[0]?.id || 0),
@@ -47,6 +49,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                     description: product.description || '',
                     price: product.price || 0,
                     weight: product.weight || null,
+                    und_weigth: product.und_weigth || 'kg',
                     active: product.active !== undefined ? product.active : true,
                     discount: product.discount || 0,
                     category_id: product.category_id || (categories[0]?.id || 0),
@@ -60,6 +63,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                     description: '',
                     price: 0,
                     weight: null,
+                    und_weigth: 'kg',
                     active: true,
                     discount: 0,
                     category_id: categories[0]?.id || 0,
@@ -125,7 +129,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
 
             try {
                 setIsSubmitting(true)
-                // Enviar weight como null si es 0 o falsy
+                // Redondear precio a 2 decimales y enviar weight como null si es 0 o falsy
                 const dataToSubmit = {
                     ...formData,
                     weight: formData.weight && formData.weight > 0 ? formData.weight : null
@@ -139,6 +143,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                         description: '',
                         price: 0,
                         weight: null,
+                        und_weigth: 'kg',
                         active: true,
                         discount: 0,
                         category_id: categories[0]?.id || 0,
@@ -204,8 +209,8 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                                 type="number"
                                 step="0.01"
                                 min="0"
-                                value={formData.price}
-                                onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
+                                value={formData.price || ''}
+                                onChange={(e) => setFormData({ ...formData, price: e.target.value ? parseFloat(e.target.value) : 0 })}
                                 placeholder="0.00"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                                 disabled={isSubmitting}
@@ -215,18 +220,28 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                         {/* Peso */}
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                Peso (kg)
+                                Peso
                             </label>
-                            <input
-                                type="number"
-                                step="0.001"
-                                min="0"
-                                value={formData.weight || ''}
-                                onChange={(e) => setFormData({ ...formData, weight: e.target.value ? parseFloat(e.target.value) : null })}
-                                placeholder="0.00"
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-                                disabled={isSubmitting}
-                            />
+                            <div className="flex gap-2">
+                                <input
+                                    type="number"
+                                    step="0.001"
+                                    min="0"
+                                    value={formData.weight || ''}
+                                    onChange={(e) => setFormData({ ...formData, weight: e.target.value ? parseFloat(e.target.value) : null })}
+                                    placeholder="0.00"
+                                    className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                    disabled={isSubmitting}
+                                />
+                                <input
+                                    type="text"
+                                    value={formData.und_weigth}
+                                    onChange={(e) => setFormData({ ...formData, und_weigth: e.target.value })}
+                                    placeholder="kg"
+                                    className="w-24 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                    disabled={isSubmitting}
+                                />
+                            </div>
                         </div>
 
                         {/* Descuento */}

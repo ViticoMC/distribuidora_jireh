@@ -24,6 +24,7 @@ interface useGetAllDataReturn {
     description?: string;
     price: number;
     weight?: number;
+    und_weigth?: string;
     active?: boolean;
     discount?: number;
     category_id: number;
@@ -37,6 +38,7 @@ interface useGetAllDataReturn {
       description?: string;
       price?: number;
       weight?: number;
+      und_weigth?: string;
       active?: boolean;
       discount?: number;
       category_id?: number;
@@ -60,6 +62,7 @@ interface useGetAllDataReturn {
       icon?: string;
       img_url?: string;
       img_id?: string;
+      orden?: number;
     },
   ) => Promise<void>;
   deleteCategoryAndRefresh: (id: number) => Promise<void>;
