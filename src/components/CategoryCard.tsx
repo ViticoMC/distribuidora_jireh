@@ -54,8 +54,8 @@ export function CategoryCard({
                         onClick={() => onMoveUp?.(category)}
                         disabled={isFirstItem}
                         className={`flex-1 flex items-center justify-center gap-2 p-2 rounded-lg transition-colors text-sm font-medium ${isFirstItem
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                : 'bg-green-100 hover:bg-green-200 text-green-700'
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            : 'bg-green-100 hover:bg-green-200 text-green-700'
                             }`}
                         title={isFirstItem ? 'Ya es la primera categoría' : 'Mover arriba'}
                     >
@@ -66,8 +66,8 @@ export function CategoryCard({
                         onClick={() => onMoveDown?.(category)}
                         disabled={isLastItem}
                         className={`flex-1 flex items-center justify-center gap-2 p-2 rounded-lg transition-colors text-sm font-medium ${isLastItem
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                : 'bg-green-100 hover:bg-green-200 text-green-700'
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            : 'bg-green-100 hover:bg-green-200 text-green-700'
                             }`}
                         title={isLastItem ? 'Ya es la última categoría' : 'Mover abajo'}
                     >
@@ -85,7 +85,6 @@ export function CategoryCard({
                                 className="flex-1 flex items-center justify-center gap-2 p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm font-medium"
                             >
                                 <Edit2 className="w-4 h-4" />
-                                Editar
                             </button>
                         )}
                         {onDelete && (
@@ -94,7 +93,6 @@ export function CategoryCard({
                                 className="flex-1 flex items-center justify-center gap-2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm font-medium"
                             >
                                 <Trash2 className="w-4 h-4" />
-                                Eliminar
                             </button>
                         )}
                     </div>

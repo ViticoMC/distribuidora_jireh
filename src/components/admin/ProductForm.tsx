@@ -14,6 +14,7 @@ interface ProductFormProps {
         und_weigth?: string
         active?: boolean
         discount?: number
+        oferta?: string
         category_id?: number
         ima_url?: string
     }) => Promise<void>
@@ -32,6 +33,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
             und_weigth: product?.und_weigth || 'kg',
             active: product?.active !== undefined ? product.active : true,
             discount: product?.discount || 0,
+            oferta: product?.oferta || '',
             category_id: product?.category_id || (categories[0]?.id || 0),
             ima_url: product?.ima_url || '',
         })
@@ -52,6 +54,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                     und_weigth: product.und_weigth || 'kg',
                     active: product.active !== undefined ? product.active : true,
                     discount: product.discount || 0,
+                    oferta: product.oferta || '',
                     category_id: product.category_id || (categories[0]?.id || 0),
                     ima_url: product.ima_url || '',
                 })
@@ -66,6 +69,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                     und_weigth: 'kg',
                     active: true,
                     discount: 0,
+                    oferta: '',
                     category_id: categories[0]?.id || 0,
                     ima_url: '',
                 })
@@ -146,6 +150,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                         und_weigth: 'kg',
                         active: true,
                         discount: 0,
+                        oferta: '',
                         category_id: categories[0]?.id || 0,
                         ima_url: '',
                     })
@@ -257,6 +262,21 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                                 value={formData.discount}
                                 onChange={(e) => setFormData({ ...formData, discount: parseInt(e.target.value) })}
                                 placeholder="0"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                disabled={isSubmitting}
+                            />
+                        </div>
+
+                        {/* Oferta */}
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                Oferta
+                            </label>
+                            <input
+                                type="text"
+                                value={formData.oferta}
+                                onChange={(e) => setFormData({ ...formData, oferta: e.target.value })}
+                                placeholder="Descripción de la oferta"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                                 disabled={isSubmitting}
                             />

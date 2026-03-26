@@ -16,10 +16,12 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete }: Produc
     onViewDetails?.(product)
   }
 
+  const isOfert = product.oferta ? product.oferta :
+    (product.discount && product.discount > 0) ? `Oferta` : false
   return (
     <div
       onClick={() => handleViewDetails(product)}
-      className="relative bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 max-w-75  h-74  transform flex flex-col justify-between pb-2 p-3">
+      className={`relative bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 max-w-75  ${isAdminMode ? 'h-86' : 'h-74'}  transform flex flex-col justify-between pb-2 p-3 `}>
       {/* Imagen */}
       <div>
         <div className="relative w-full h-40  overflow-hidden">
@@ -30,9 +32,9 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete }: Produc
           />
         </div>
         {
-          (product.discount && product.discount > 0) ? (
+          isOfert ? (
             <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
-              Oferta
+              {isOfert}
             </div>
           ) : null
         }
@@ -65,7 +67,7 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete }: Produc
                   <span className="line-through text-gray-500 text-sm">
                     ${product.price}
                   </span>
-                  <div className="absolute -top-4 -left-1 bg-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-bold shadow-lg whitespace-nowrap">
+                  <div className="absolute -top-4 left-1 bg-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-bold shadow-lg whitespace-nowrap">
                     -{product.discount}%
                   </div>
                 </div>
@@ -93,25 +95,23 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete }: Produc
       </div>
 
       {/* Botones */}
-      {onEdit || onDelete ? (
+      {isAdminMode ? (
         <div className="flex   gap-1   border-gray-200">
           {onEdit && (
-            <button
+            <div
               onClick={() => onEdit(product)}
-              className="flex-1 flex items-center justify-center gap-2 p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm font-medium"
+              className=" flex items-center justify-center gap-2 p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm font-medium"
             >
               <Edit2 className="w-4 h-4" />
-              Editar
-            </button>
+            </div>
           )}
           {onDelete && (
-            <button
+            <div
               onClick={() => onDelete(product)}
-              className="flex-1 flex items-center justify-center gap-2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm font-medium"
+              className=" flex items-center justify-center gap-2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm font-medium"
             >
               <Trash2 className="w-4 h-4" />
-              Eliminar
-            </button>
+            </div>
           )}
         </div>
       ) : null}

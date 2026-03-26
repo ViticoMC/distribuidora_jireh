@@ -17,6 +17,7 @@ interface ProductFormModalProps {
         und_weigth?: string
         active?: boolean
         discount?: number
+        oferta?: string
         category_id?: number
         ima_url?: string
     }) => Promise<void>
