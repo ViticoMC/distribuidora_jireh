@@ -39,8 +39,16 @@ export function HomePage() {
             return matchesCategory && matchesSearch && notAgotado;
         })
 
-        // Ordenar por categoría según el orden definido y alfabéticamente dentro de cada categoría
+        // Ordenar: primero productos con oferta o descuento, luego por categoría y nombre
         return filtered.sort((a, b) => {
+            // Priorizar productos con oferta o descuento
+            const hasOfferA = (a.oferta && a.oferta.trim() !== "") || (a.discount && a.discount > 0);
+            const hasOfferB = (b.oferta && b.oferta.trim() !== "") || (b.discount && b.discount > 0);
+
+            if (hasOfferA && !hasOfferB) return -1;
+            if (!hasOfferA && hasOfferB) return 1;
+
+            // Si ambos tienen oferta o ninguno tiene, ordenar por categoría
             const categoryA = categories.find(c => c.id === a.category_id)
             const categoryB = categories.find(c => c.id === b.category_id)
             const ordenA = categoryA?.orden ?? Number.MAX_VALUE

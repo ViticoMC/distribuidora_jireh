@@ -225,7 +225,7 @@ export function AdminPage() {
         str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 
     const filteredProductsBySearch = useMemo(() => {
-        return products.filter((product: Product) => {
+        const filtered = products.filter((product: Product) => {
             const normalizedSearch = normalizeString(searchProducts)
             const matchesSearch =
                 normalizeString(product.name).includes(normalizedSearch) ||
@@ -233,7 +233,31 @@ export function AdminPage() {
             const matchesCategory = selectedCategoryFilter === null || product.category_id === selectedCategoryFilter || selectedCategoryFilter === 0
             return matchesSearch && matchesCategory
         })
-    }, [products, searchProducts, selectedCategoryFilter])
+
+        // Ordenar: primero productos con oferta o descuento, luego por categoría y nombre
+        return filtered.sort((a, b) => {
+            // Priorizar productos con oferta o descuento
+            const hasOfferA = (a.oferta && a.oferta.trim() !== "") || (a.discount && a.discount > 0);
+            const hasOfferB = (b.oferta && b.oferta.trim() !== "") || (b.discount && b.discount > 0);
+
+            if (hasOfferA && !hasOfferB) return -1;
+            if (!hasOfferA && hasOfferB) return 1;
+
+            // Si ambos tienen oferta o ninguno tiene, ordenar por categoría
+            const categoryA = categories.find(c => c.id === a.category_id)
+            const categoryB = categories.find(c => c.id === b.category_id)
+            const ordenA = categoryA?.orden ?? Number.MAX_VALUE
+            const ordenB = categoryB?.orden ?? Number.MAX_VALUE
+
+            // Primero ordenar por categoría
+            if (ordenA !== ordenB) {
+                return ordenA - ordenB
+            }
+
+            // Luego ordenar alfabéticamente por nombre dentro de la misma categoría
+            return a.name.localeCompare(b.name, 'es', { sensitivity: 'base' })
+        })
+    }, [products, searchProducts, selectedCategoryFilter, categories])
 
     // Ordenar categorías por el campo orden
     const sortedCategories = useMemo(() => {
@@ -393,7 +417,7 @@ export function AdminPage() {
                         ) : (
                             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {sortedCategories.map((category: Category, index: number) => {
-                                    if(category.id === 0) return null // Omitir categoría "Todas" en el listados
+                                    if (category.id === 0) return null // Omitir categoría "Todas" en el listados
                                     return (
 
                                         <CategoryCard
