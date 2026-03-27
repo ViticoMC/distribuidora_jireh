@@ -39,13 +39,20 @@ export function HomePage() {
             return matchesCategory && matchesSearch && notAgotado;
         })
 
-        // Ordenar por categoría según el orden definido
+        // Ordenar por categoría según el orden definido y alfabéticamente dentro de cada categoría
         return filtered.sort((a, b) => {
             const categoryA = categories.find(c => c.id === a.category_id)
             const categoryB = categories.find(c => c.id === b.category_id)
             const ordenA = categoryA?.orden ?? Number.MAX_VALUE
             const ordenB = categoryB?.orden ?? Number.MAX_VALUE
-            return ordenA - ordenB
+
+            // Primero ordenar por categoría
+            if (ordenA !== ordenB) {
+                return ordenA - ordenB
+            }
+
+            // Luego ordenar alfabéticamente por nombre dentro de la misma categoría
+            return a.name.localeCompare(b.name, 'es', { sensitivity: 'base' })
         })
     }, [displayedProducts, selectedCategoryId, searchTerm, categories]);
 
