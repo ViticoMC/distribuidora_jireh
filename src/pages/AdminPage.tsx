@@ -34,6 +34,12 @@ export function AdminPage() {
         error: null,
         isDeleting: false,
     })
+    const [filteredByAgotado, setFilteredByAgotado] = useState(false)
+
+    // Handler para filtro de agotados
+    const handleFilterAgotados = (isFiltered: boolean) => {
+        setFilteredByAgotado(isFiltered)
+    }
 
     // Manejar apertura de modal
     const handleOpenProductModal = () => {
@@ -226,6 +232,12 @@ export function AdminPage() {
 
     const filteredProductsBySearch = useMemo(() => {
         const filtered = products.filter((product: Product) => {
+            // Primero aplicar el filtro de agotados
+            if (filteredByAgotado) {
+                const isOutOfStock = !product.active;
+                if (!isOutOfStock) return false
+            }
+
             const normalizedSearch = normalizeString(searchProducts)
             const matchesSearch =
                 normalizeString(product.name).includes(normalizedSearch) ||
@@ -257,7 +269,7 @@ export function AdminPage() {
             // Luego ordenar alfabéticamente por nombre dentro de la misma categoría
             return a.name.localeCompare(b.name, 'es', { sensitivity: 'base' })
         })
-    }, [products, searchProducts, selectedCategoryFilter, categories])
+    }, [products, searchProducts, selectedCategoryFilter, categories, filteredByAgotado])
 
     // Ordenar categorías por el campo orden
     const sortedCategories = useMemo(() => {
@@ -363,7 +375,11 @@ export function AdminPage() {
 
                         {/* Búsqueda y filtro */}
                         <div className="mb-6 md:mb-8">
-                            <SearchBar onSearch={setSearchProducts} />
+                            <SearchBar
+                                onSearch={setSearchProducts}
+                                onFilterAgotados={handleFilterAgotados}
+                                isFilteringAgotados={filteredByAgotado}
+                            />
                         </div>
 
                         {/* Categorías - Horizontal en tablet */}
