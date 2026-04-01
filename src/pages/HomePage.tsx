@@ -2,9 +2,9 @@
 import { useState, useEffect, useMemo } from "react";
 import type { Product } from "@/types";
 import { useGetAllData } from "@/hooks/useGetAllData";
-import { Header, ProductGrid, CategorySidebar, SearchBar, ProductModal } from "@/components";
+import { Header, ProductGrid, CategorySidebar, SearchBar, ProductModal, PasswordProtectedModal } from "@/components";
 import { useAuth } from "@/hooks/useAuth";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, List } from "lucide-react";
 
 
 export function HomePage() {
@@ -18,6 +18,9 @@ export function HomePage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [displayedProducts, setDisplayedProducts] = useState<Product[]>(products);
+    const [listView, setListView] = useState<"list1" | "list2">("list1");
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [targetListView, setTargetListView] = useState<"list1" | "list2">("list1");
 
     // Actualizar displayedProducts cuando cambien los productos principales
     useEffect(() => {
@@ -76,6 +79,23 @@ export function HomePage() {
         setSelectedProduct(product);
     };
 
+    // Manejar cierre modal
+    const handleClosePasswordModal = () => {
+        setShowPasswordModal(false);
+        setTargetListView("list1");
+    };
+    const handleChangeList = (targetList: "list1" | "list2") => {
+        if (listView !== targetList) {
+            setTargetListView(targetList);
+            setShowPasswordModal(true);
+        }
+    };
+
+    // Validación exitosa de contraseña
+    const handlePasswordSuccess = () => {
+        setListView(targetListView);
+    };
+
     return (
         <div className="relative min-h-screen bg-linear-to-br overflow-hidden from-gray-50 to-gray-100 pb-10" >
             {/* Header */}
@@ -90,6 +110,34 @@ export function HomePage() {
 
             {/* Contenido principal */}
             <main className="w-full m-4">
+                {/* Switch de vista de lista - Solo para usuarios autenticados */}
+                {user && (
+                    <div className="mb-6 md:mb-8 mx-auto flex justify-center">
+                        <div className="inline-flex items-center bg-white rounded-lg shadow-md p-1 border border-gray-200">
+                            <button
+                                onClick={() => handleChangeList("list1")}
+                                className={`px-4 py-2 rounded-md font-semibold transition-all flex items-center gap-2 ${listView === "list1"
+                                    ? "bg-green-600 text-white"
+                                    : "bg-transparent text-gray-700 hover:text-gray-900"
+                                    }`}
+                            >
+                                <List size={18} />
+                                Lista 1
+                            </button>
+                            <button
+                                onClick={() => handleChangeList("list2")}
+                                className={`px-4 py-2 rounded-md font-semibold transition-all flex items-center gap-2 ${listView === "list2"
+                                    ? "bg-green-600 text-white"
+                                    : "bg-transparent text-gray-700 hover:text-gray-900"
+                                    }`}
+                            >
+                                <List size={18} />
+                                Lista 2
+                            </button>
+                        </div>
+                    </div>
+                )}
+
                 {/* Barra de búsqueda - Full width en mobile, constrained en tablet+ */}
                 <div className="mb-6 md:mb-8 mx-auto">
                     <SearchBar onSearch={setSearchTerm} />
@@ -120,6 +168,7 @@ export function HomePage() {
                         products={filteredProducts}
                         isLoading={isLoading}
                         onViewDetails={handleViewDetails}
+                        listView={listView}
                     />
                 </div>
             </main>
@@ -131,6 +180,16 @@ export function HomePage() {
                     onClose={() => setSelectedProduct(null)}
                     onProductUpdated={handleProductOutOfStock}
                     user={user}
+                />
+            )}
+
+            {/* Modal de contraseña para Lista 2 */}
+            {user && (
+                <PasswordProtectedModal
+                    isOpen={showPasswordModal}
+                    onClose={handleClosePasswordModal}
+                    onSuccess={handlePasswordSuccess}
+                    userEmail={user.email}
                 />
             )}
         </div>

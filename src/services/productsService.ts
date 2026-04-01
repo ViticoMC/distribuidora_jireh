@@ -4,13 +4,19 @@ import { deleteImage, getPublicIdFromUrl } from "./cloudinaryService";
 interface CreateProductData {
   name: string;
   description?: string;
-  price: number;
+  price1: number;
+  price2: number;
   weight?: number;
   active?: boolean;
   discount?: number;
   category_id: number;
   img_id?: string;
   ima_url?: string;
+}
+
+interface SupabaseError extends Error {
+  code?: string;
+  details?: string;
 }
 
 /**
@@ -87,9 +93,9 @@ export async function deleteProduct(id: string) {
 
   if (error) {
     // Crear un error con la información completa del error de Supabase
-    const customError = new Error(error.message);
-    (customError as any).code = error.code;
-    (customError as any).details = error.details;
+    const customError = new Error(error.message) as SupabaseError;
+    customError.code = error.code;
+    customError.details = error.details;
     throw customError;
   }
 }

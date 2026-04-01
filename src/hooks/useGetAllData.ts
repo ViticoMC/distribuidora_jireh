@@ -22,7 +22,8 @@ interface useGetAllDataReturn {
   createProductAndRefresh: (data: {
     name: string;
     description?: string;
-    price: number;
+    price1: number;
+    price2: number;
     weight?: number;
     und_weigth?: string;
     active?: boolean;
@@ -36,7 +37,8 @@ interface useGetAllDataReturn {
     data: {
       name?: string;
       description?: string;
-      price?: number;
+      price1?: number;
+      price2?: number;
       weight?: number;
       und_weigth?: string;
       active?: boolean;

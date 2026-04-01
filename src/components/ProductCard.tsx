@@ -6,10 +6,10 @@ interface ProductCardProps {
   onViewDetails?: (product: Product) => void
   onEdit?: (product: Product) => void
   onDelete?: (product: Product) => void
-
+  listView?: "list1" | "list2"
 }
 
-export function ProductCard({ product, onViewDetails, onEdit, onDelete }: ProductCardProps) {
+export function ProductCard({ product, onViewDetails, onEdit, onDelete, listView = "list1" }: ProductCardProps) {
   const isAdminMode = onEdit || onDelete
   const handleViewDetails = (product: Product) => {
     if (isAdminMode) return;
@@ -18,6 +18,10 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete }: Produc
 
   const isOfert = product.oferta ? product.oferta :
     (product.discount && product.discount > 0) ? `Oferta` : false
+
+  // Determinar qué precio mostrar según la lista seleccionada
+  const selectedPrice = listView === "list2" && product.price2 ? product.price2 : product.price1
+
   return (
     <div
       onClick={() => handleViewDetails(product)}
@@ -59,25 +63,25 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete }: Produc
       {/* Precio y Peso */}
       <div className="flex flex-col   gap-1 mb-1 ">
         <div className="bg-blue-50 rounded-lg text-sm  flex items-center justify-start p-1 gap-2">
-          <span className="text-gray-700 font-semibold">Precio:</span>
+          <span className="text-gray-700 font-semibold">Precio :</span>
           <div className="flex items-center gap-2">
             {product.discount && product.discount > 0 ? (
               <>
                 <div className="relative inline-block">
                   <span className="line-through text-gray-500 text-sm">
-                    ${product.price}
+                    ${selectedPrice}
                   </span>
                   <div className="absolute -top-4 left-1 bg-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-bold shadow-lg whitespace-nowrap">
                     -{product.discount}%
                   </div>
                 </div>
                 <span className="font-bold text-red-600 text-sm">
-                  ${(product.price * (1 - product.discount / 100)).toFixed(2)}
+                  ${(selectedPrice * (1 - product.discount / 100)).toFixed(2)}
                 </span>
               </>
             ) : (
               <span className="font-bold text-blue-600">
-                ${product.price}
+                ${selectedPrice}
               </span>
             )}
           </div>

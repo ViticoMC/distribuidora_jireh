@@ -20,7 +20,8 @@ export interface Product {
   id: string;
   name: string;
   description?: string;
-  price: number;
+  price1: number;
+  price2: number;
   weight?: number;
   und_weigth?: string;
   active?: boolean;

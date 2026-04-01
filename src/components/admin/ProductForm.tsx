@@ -9,7 +9,8 @@ interface ProductFormProps {
     onSubmit: (data: {
         name: string
         description?: string
-        price?: number
+        price1?: number
+        price2?: number
         weight?: number | null
         und_weigth?: string
         active?: boolean
@@ -28,7 +29,8 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
         const [formData, setFormData] = useState({
             name: product?.name || '',
             description: product?.description || '',
-            price: product?.price || 0,
+            price1: product?.price1 || 0,
+            price2: product?.price2 || 0,
             weight: product?.weight || null,
             und_weigth: product?.und_weigth || 'kg',
             active: product?.active !== undefined ? product.active : true,
@@ -49,7 +51,8 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                 setFormData({
                     name: product.name || '',
                     description: product.description || '',
-                    price: product.price || 0,
+                    price1: product.price1 || 0,
+                    price2: product.price2 || 0,
                     weight: product.weight || null,
                     und_weigth: product.und_weigth || 'kg',
                     active: product.active !== undefined ? product.active : true,
@@ -64,7 +67,8 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                 setFormData({
                     name: '',
                     description: '',
-                    price: 0,
+                    price1: 0,
+                    price2: 0,
                     weight: null,
                     und_weigth: 'kg',
                     active: true,
@@ -145,7 +149,8 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                     setFormData({
                         name: '',
                         description: '',
-                        price: 0,
+                        price1: 0,
+                        price2: 0,
                         weight: null,
                         und_weigth: 'kg',
                         active: true,
@@ -205,17 +210,34 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
 
                     {/* Grid de campos pequeños */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Precio */}
+                        {/* Precio Lista 1 */}
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                Precio ($)
+                                Precio para Lista 1 ($)
                             </label>
                             <input
                                 type="number"
                                 step="0.01"
                                 min="0"
-                                value={formData.price || ''}
-                                onChange={(e) => setFormData({ ...formData, price: e.target.value ? parseFloat(e.target.value) : 0 })}
+                                value={formData.price1 || ''}
+                                onChange={(e) => setFormData({ ...formData, price1: e.target.value ? parseFloat(e.target.value) : 0 })}
+                                placeholder="0.00"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                disabled={isSubmitting}
+                            />
+                        </div>
+
+                        {/* Precio Lista 2 */}
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                Precio para Lista 2 ($)
+                            </label>
+                            <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                value={formData.price2 || ''}
+                                onChange={(e) => setFormData({ ...formData, price2: e.target.value ? parseFloat(e.target.value) : 0 })}
                                 placeholder="0.00"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                                 disabled={isSubmitting}
@@ -235,7 +257,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                                     value={formData.weight || ''}
                                     onChange={(e) => setFormData({ ...formData, weight: e.target.value ? parseFloat(e.target.value) : null })}
                                     placeholder="0.00"
-                                    className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                    className="w-40 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                                     disabled={isSubmitting}
                                 />
                                 <input

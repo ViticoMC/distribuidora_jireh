@@ -12,7 +12,8 @@ interface ProductFormModalProps {
     onSubmit: (data: {
         name: string
         description?: string
-        price?: number
+        price1?: number
+        price2?: number
         weight?: number | null
         und_weigth?: string
         active?: boolean

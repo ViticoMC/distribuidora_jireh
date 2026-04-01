@@ -13,7 +13,8 @@ interface Product {
   id: number
   name: string
   description?: string
-  price: number
+  price1: number
+  price2: number
   weight?: number
   active: boolean
   discount?: number
@@ -63,7 +64,8 @@ const mockProducts = [
   {
     name: 'iPhone 15 Pro',
     description: 'Smartphone con procesador A17 Pro',
-    price: 999.99,
+    price1: 999.99,
+    price2: 999.99,
     weight: 0.187,
     active: true,
     discount: 0,
@@ -73,7 +75,8 @@ const mockProducts = [
   {
     name: 'Samsung Galaxy S24',
     description: 'Teléfono inteligente con pantalla AMOLED',
-    price: 899.99,
+    price1: 899.99,
+    price2: 899.99,
     weight: 0.168,
     active: true,
     discount: 10,
@@ -83,7 +86,8 @@ const mockProducts = [
   {
     name: 'iPad Air',
     description: 'Tablet de 11 pulgadas con M1',
-    price: 599.99,
+    price1: 599.99,
+    price2: 599.99,
     weight: 0.462,
     active: true,
     discount: 0,
@@ -93,7 +97,8 @@ const mockProducts = [
   {
     name: 'Sony WH-1000XM5',
     description: 'Auriculares inalámbricos con cancelación de ruido',
-    price: 349.99,
+    price1: 349.99,
+    price2: 349.99,
     weight: 0.25,
     active: true,
     discount: 5,
@@ -103,7 +108,8 @@ const mockProducts = [
   {
     name: 'MacBook Pro 16"',
     description: 'Laptop profesional con M3 Max',
-    price: 3499.99,
+    price1: 3499.99,
+    price2: 3499.99,
     weight: 2.15,
     active: true,
     discount: 0,
@@ -114,7 +120,8 @@ const mockProducts = [
   {
     name: 'Camiseta Nike Essentials',
     description: 'Camiseta de algodón 100%',
-    price: 24.99,
+    price1: 24.99,
+    price2: 24.99,
     weight: 0.18,
     active: true,
     discount: 0,
@@ -124,7 +131,8 @@ const mockProducts = [
   {
     name: 'Jeans Levis 501',
     description: 'Jeans clásico azul oscuro',
-    price: 89.99,
+    price1: 89.99,
+    price2: 89.99,
     weight: 0.65,
     active: true,
     discount: 15,
@@ -134,7 +142,8 @@ const mockProducts = [
   {
     name: 'Chaqueta Adidas',
     description: 'Chaqueta deportiva impermeable',
-    price: 129.99,
+    price1: 129.99,
+    price2: 129.99,
     weight: 0.88,
     active: true,
     discount: 0,
@@ -144,7 +153,8 @@ const mockProducts = [
   {
     name: 'Zapatos Running Asics',
     description: 'Tenis para correr de alto rendimiento',
-    price: 139.99,
+    price1: 139.99,
+    price2: 139.99,
     weight: 0.35,
     active: true,
     discount: 10,
@@ -154,7 +164,8 @@ const mockProducts = [
   {
     name: 'Gorro Beanie',
     description: 'Gorro de invierno tejido',
-    price: 19.99,
+    price1: 19.99,
+    price2: 19.99,
     weight: 0.1,
     active: true,
     discount: 0,
@@ -165,7 +176,8 @@ const mockProducts = [
   {
     name: 'Aceite de Oliva Extra Virgen',
     description: 'Aceite de oliva prensado en frío',
-    price: 14.99,
+    price1: 14.99,
+    price2: 14.99,
     weight: 0.75,
     active: true,
     discount: 0,
@@ -175,7 +187,8 @@ const mockProducts = [
   {
     name: 'Café Premium Colombiano',
     description: 'Granos de café de alta calidad',
-    price: 12.99,
+    price1: 12.99,
+    price2: 12.99,
     weight: 0.5,
     active: true,
     discount: 5,
@@ -185,7 +198,8 @@ const mockProducts = [
   {
     name: 'Chocolate Belga 70%',
     description: 'Chocolate negro con 70% cacao',
-    price: 8.99,
+    price1: 8.99,
+    price2: 8.99,
     weight: 0.2,
     active: true,
     discount: 0,
@@ -196,7 +210,8 @@ const mockProducts = [
   {
     name: 'El Quijote',
     description: 'Novela clásica de Cervantes',
-    price: 19.99,
+    price1: 19.99,
+    price2: 19.99,
     weight: 0.8,
     active: true,
     discount: 0,
@@ -206,7 +221,8 @@ const mockProducts = [
   {
     name: 'Clean Code',
     description: 'Guía para escribir código limpio',
-    price: 34.99,
+    price1: 34.99,
+    price2: 34.99,
     weight: 0.95,
     active: true,
     discount: 5,
@@ -279,7 +295,7 @@ export function SeedDataPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white shadow-lg rounded-lg p-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Seed Data</h1>
@@ -317,7 +333,7 @@ export function SeedDataPage() {
           <button
             onClick={seedData}
             disabled={status.status === 'loading'}
-            className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            className="w-full px-6 py-3 bg-linear-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             {status.status === 'loading' ? 'Insertando datos...' : 'Llenar Tablas con Mock Data'}
           </button>
@@ -330,7 +346,7 @@ export function SeedDataPage() {
                 {status.categories.map((category: Category) => (
                   <div
                     key={category.id}
-                    className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-lg"
+                    className="p-4 bg-linear-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-lg"
                   >
                     <div className="text-3xl mb-2">{category.icon || '📦'}</div>
                     <h3 className="font-semibold text-gray-900">{category.name}</h3>
@@ -365,7 +381,7 @@ export function SeedDataPage() {
                           {product.description}
                         </td>
                         <td className="px-4 py-2 text-right text-gray-900 font-semibold">
-                          ${product.price.toFixed(2)}
+                          ${product.price1.toFixed(2)}
                         </td>
                         <td className="px-4 py-2 text-center text-gray-600">
                           {product.discount}%
@@ -373,8 +389,8 @@ export function SeedDataPage() {
                         <td className="px-4 py-2 text-center">
                           <span
                             className={`px-2 py-1 rounded text-xs font-semibold ${product.active
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-gray-100 text-gray-800'
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-gray-100 text-gray-800'
                               }`}
                           >
                             {product.active ? 'Sí' : 'No'}

@@ -3,6 +3,7 @@ export { CategoryCard } from "./CategoryCard";
 export { ConfirmDeleteModal } from "./ConfirmDeleteModal";
 export { FilterAndSort } from "./FilterAndSort";
 export { Header } from "./Header";
+export { PasswordProtectedModal } from "./PasswordProtectedModal";
 export { ProductCard } from "./ProductCard";
 export { ProductGrid } from "./ProductGrid";
 export { ProductModal } from "./ProductModal";

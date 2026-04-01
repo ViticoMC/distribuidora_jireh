@@ -7,6 +7,7 @@ interface ProductGridProps {
   onViewDetails?: (product: Product) => void;
   onEdit?: (product: Product) => void
   onDelete?: (product: Product) => void
+  listView?: "list1" | "list2"
 }
 
 export function ProductGrid({
@@ -14,7 +15,8 @@ export function ProductGrid({
   isLoading,
   onViewDetails,
   onEdit,
-  onDelete
+  onDelete,
+  listView = "list1"
 }: ProductGridProps) {
 
   if (isLoading) {
@@ -48,6 +50,7 @@ export function ProductGrid({
           <ProductCard
             key={product.id}
             product={product}
+            listView={listView}
             onViewDetails={onViewDetails}
             onEdit={onEdit}
             onDelete={onDelete}

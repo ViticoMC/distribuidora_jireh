@@ -69,7 +69,8 @@ export function AdminPage() {
     const handleSaveProduct = async (data: {
         name: string
         description?: string
-        price?: number
+        price1?: number
+        price2?: number
         weight?: number | null
         und_weigth?: string
         active?: boolean
@@ -79,14 +80,15 @@ export function AdminPage() {
     }) => {
         try {
             // Validar campos requeridos
-            if (!data.price || !data.category_id) {
+            if (!data.price1 || !data.category_id) {
                 throw new Error('Precio y categoría son requeridos')
             }
 
             // Preparar datos sin null values
             const productData = {
                 ...data,
-                price: data.price,
+                price1: data.price1,
+                price2: data.price2 || data.price1,
                 category_id: data.category_id,
                 weight: data.weight || undefined,
                 und_weigth: data.und_weigth || 'kg',
