@@ -244,7 +244,7 @@ export function AdminPage() {
             const matchesSearch =
                 normalizeString(product.name).includes(normalizedSearch) ||
                 normalizeString(product.description || '').includes(normalizedSearch)
-            const matchesCategory = selectedCategoryFilter === null || product.category_id === selectedCategoryFilter || selectedCategoryFilter === 0
+            const matchesCategory = selectedCategoryFilter === null || product.category_id === selectedCategoryFilter
             return matchesSearch && matchesCategory
         })
 

@@ -137,7 +137,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
 
             try {
                 setIsSubmitting(true)
-                // Redondear precio a 2 decimales y enviar weight como null si es 0 o falsy
+                // Enviar weight como null si es 0 o falsy
                 const dataToSubmit = {
                     ...formData,
                     weight: formData.weight && formData.weight > 0 ? formData.weight : null
@@ -217,7 +217,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                             </label>
                             <input
                                 type="number"
-                                step="0.01"
+                                step="any"
                                 min="0"
                                 value={formData.price1 || ''}
                                 onChange={(e) => setFormData({ ...formData, price1: e.target.value ? parseFloat(e.target.value) : 0 })}
@@ -234,7 +234,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                             </label>
                             <input
                                 type="number"
-                                step="0.01"
+                                step="any"
                                 min="0"
                                 value={formData.price2 || ''}
                                 onChange={(e) => setFormData({ ...formData, price2: e.target.value ? parseFloat(e.target.value) : 0 })}

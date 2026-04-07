@@ -14,7 +14,7 @@ export function HomePage() {
 
 
     // Estado local
-    const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [displayedProducts, setDisplayedProducts] = useState<Product[]>(products);
@@ -34,37 +34,52 @@ export function HomePage() {
         str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 
     const filteredProducts = useMemo(() => {
-        const normalizedSearch = normalizeString(searchTerm)
+        const normalizedSearch = normalizeString(searchTerm);
+
+        const categoryMap = new Map(categories.map(c => [c.id, c]));
+
         const filtered = displayedProducts.filter((product) => {
-            const notAgotado = product.active; // Solo mostrar productos activos
-            const matchesCategory = selectedCategoryId ? product.category_id === selectedCategoryId : true;
-            const matchesSearch = normalizeString(product.name).includes(normalizedSearch);
+            const notAgotado = product.active;
+            const matchesCategory =
+                selectedCategoryId === null ||
+                product.category_id === selectedCategoryId;
+
+            const matchesSearch =
+                normalizeString(product.name).includes(normalizedSearch);
+
             return matchesCategory && matchesSearch && notAgotado;
-        })
+        });
 
-        // Ordenar: primero productos con oferta o descuento, luego por categoría y nombre
-        return filtered.sort((a, b) => {
-            // Priorizar productos con oferta o descuento
-            const hasOfferA = (a.oferta && a.oferta.trim() !== "") || (a.discount && a.discount > 0);
-            const hasOfferB = (b.oferta && b.oferta.trim() !== "") || (b.discount && b.discount > 0);
+        return [...filtered].sort((a, b) => {
+            const hasOfferA =
+                (a.oferta && a.oferta.trim() !== "") ||
+                (a.discount && a.discount > 0);
 
-            if (hasOfferA && !hasOfferB) return -1;
-            if (!hasOfferA && hasOfferB) return 1;
+            const hasOfferB =
+                (b.oferta && b.oferta.trim() !== "") ||
+                (b.discount && b.discount > 0);
 
-            // Si ambos tienen oferta o ninguno tiene, ordenar por categoría
-            const categoryA = categories.find(c => c.id === a.category_id)
-            const categoryB = categories.find(c => c.id === b.category_id)
-            const ordenA = categoryA?.orden ?? Number.MAX_VALUE
-            const ordenB = categoryB?.orden ?? Number.MAX_VALUE
-
-            // Primero ordenar por categoría
-            if (ordenA !== ordenB) {
-                return ordenA - ordenB
+            // 1. Prioridad: ofertas
+            if (hasOfferA !== hasOfferB) {
+                return hasOfferA ? -1 : 1;
             }
 
-            // Luego ordenar alfabéticamente por nombre dentro de la misma categoría
-            return a.name.localeCompare(b.name, 'es', { sensitivity: 'base' })
-        })
+            // 2. Categoría (orden)
+            const ordenA =
+                categoryMap.get(a.category_id)?.orden ?? Number.MAX_VALUE;
+
+            const ordenB =
+                categoryMap.get(b.category_id)?.orden ?? Number.MAX_VALUE;
+
+            if (ordenA !== ordenB) {
+                return ordenA - ordenB;
+            }
+
+            // 3. Nombre
+            return a.name.localeCompare(b.name, "es", {
+                sensitivity: "base",
+            });
+        });
     }, [displayedProducts, selectedCategoryId, searchTerm, categories]);
 
 

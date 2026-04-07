@@ -69,7 +69,7 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete, listView
               <>
                 <div className="relative inline-block">
                   <span className="line-through text-gray-500 text-sm">
-                    ${selectedPrice}
+                    ${selectedPrice.toFixed(2)}
                   </span>
                   <div className="absolute -top-4 left-1 bg-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-bold shadow-lg whitespace-nowrap">
                     -{product.discount}%
@@ -81,7 +81,7 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete, listView
               </>
             ) : (
               <span className="font-bold text-blue-600">
-                ${selectedPrice}
+                ${selectedPrice.toFixed(2)}
               </span>
             )}
           </div>
