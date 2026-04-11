@@ -4,7 +4,7 @@ import type { Category } from "../types";
 interface CategorySidebarProps {
   categories: Category[];
   selectedCategoryId: number | null;
-  onSelectCategory: (categoryId: number) => void;
+  onSelectCategory: (categoryId: number | null) => void;
   isLoading?: boolean;
 }
 
@@ -36,8 +36,16 @@ export function CategorySidebar({
         <div className="h-10 bg-gray-200 rounded animate-pulse" />
       ) : (
         <select
-          value={selectedCategoryId || ""}
-          onChange={(e) => onSelectCategory(Number(e.target.value))}
+          value={selectedCategoryId ?? ""}
+          onChange={(e) => {
+            const value = e.target.value;
+            const allCategory = sortedCategories.find((c) => c.id === 0 || c.name === 'Todas');
+            if (allCategory && Number(value) === allCategory.id) {
+              onSelectCategory(null);
+            } else {
+              onSelectCategory(Number(value));
+            }
+          }}
           className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
         >
           {sortedCategories.map((category) => (
