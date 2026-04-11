@@ -4,6 +4,7 @@ import type { Product } from "@/types";
 import { useGetAllData } from "@/hooks/useGetAllData";
 import { Header, ProductGrid, CategorySidebar, SearchBar, ProductModal, PasswordProtectedModal } from "@/components";
 import { useAuth } from "@/hooks/useAuth";
+import { updateProduct } from "@/services/productsService";
 import { ArrowUp, List } from "lucide-react";
 
 
@@ -75,9 +76,14 @@ export function HomePage() {
     }, [products, selectedCategoryId, searchTerm, categories]);
 
 
-    const handleProductOutOfStock = (productId: string) => {
-        // No es necesario mantener displayedProducts sincronizado
-        // El filtrado se hace en tiempo real en useMemo
+    const handleProductOutOfStock = async (productId: string) => {
+        try {
+            await updateProduct(productId, { active: false });
+            setSelectedProduct(null);
+        } catch (error) {
+            console.error('Error al marcar producto como agotado:', error);
+            alert('Error al marcar el producto como agotado');
+        }
     };
 
     // Manejar cuando se marca un producto como agotado
