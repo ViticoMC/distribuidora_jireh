@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import type { Product } from "@/types";
 import { useGetAllData } from "@/hooks/useGetAllData";
 import { Header, ProductGrid, CategorySidebar, SearchBar, ProductModal, PasswordProtectedModal } from "@/components";
@@ -17,15 +17,9 @@ export function HomePage() {
     const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-    const [displayedProducts, setDisplayedProducts] = useState<Product[]>(products);
     const [listView, setListView] = useState<"list1" | "list2">("list1");
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [targetListView, setTargetListView] = useState<"list1" | "list2">("list1");
-
-    // Actualizar displayedProducts cuando cambien los productos principales
-    useEffect(() => {
-        setDisplayedProducts(products);
-    }, [products]);
 
     // Obtener la categoría seleccionada
     const selectedCategory = categories.find(cat => cat.id === selectedCategoryId);
@@ -36,18 +30,18 @@ export function HomePage() {
     const filteredProducts = useMemo(() => {
         const normalizedSearch = normalizeString(searchTerm);
 
-        const categoryMap = new Map(categories.map(c => [c.id, c]));
-
-        const filtered = displayedProducts.filter((product) => {
-            const notAgotado = product.active;
+        const filtered = products.filter((product) => {
             const matchesCategory =
                 selectedCategoryId === null ||
                 product.category_id === selectedCategoryId;
 
             const matchesSearch =
-                normalizeString(product.name).includes(normalizedSearch);
+                normalizeString(product.name).includes(normalizedSearch) ||
+                normalizeString(product.description || '').includes(normalizedSearch);
 
-            return matchesCategory && matchesSearch && notAgotado;
+            const isActive = product.active;
+
+            return matchesCategory && matchesSearch && isActive;
         });
 
         return [...filtered].sort((a, b) => {
@@ -60,16 +54,14 @@ export function HomePage() {
                 (b.discount && b.discount > 0);
 
             // 1. Prioridad: ofertas
-            if (hasOfferA !== hasOfferB) {
-                return hasOfferA ? -1 : 1;
-            }
+            if (hasOfferA && !hasOfferB) return -1;
+            if (!hasOfferA && hasOfferB) return 1;
 
             // 2. Categoría (orden)
-            const ordenA =
-                categoryMap.get(a.category_id)?.orden ?? Number.MAX_VALUE;
-
-            const ordenB =
-                categoryMap.get(b.category_id)?.orden ?? Number.MAX_VALUE;
+            const categoryA = categories.find(c => c.id === a.category_id)
+            const categoryB = categories.find(c => c.id === b.category_id)
+            const ordenA = categoryA?.orden ?? Number.MAX_VALUE;
+            const ordenB = categoryB?.orden ?? Number.MAX_VALUE;
 
             if (ordenA !== ordenB) {
                 return ordenA - ordenB;
@@ -80,11 +72,12 @@ export function HomePage() {
                 sensitivity: "base",
             });
         });
-    }, [displayedProducts, selectedCategoryId, searchTerm, categories]);
+    }, [products, selectedCategoryId, searchTerm, categories]);
 
 
     const handleProductOutOfStock = (productId: string) => {
-        setDisplayedProducts(prev => prev.filter(p => p.id !== productId));
+        // No es necesario mantener displayedProducts sincronizado
+        // El filtrado se hace en tiempo real en useMemo
     };
 
     // Manejar cuando se marca un producto como agotado
