@@ -379,6 +379,8 @@ export function AdminPage() {
                         <div className="mb-6 md:mb-8">
                             <SearchBar
                                 onSearch={setSearchProducts}
+                                value={searchProducts}
+                                onClear={() => setSearchProducts("")}
                                 onFilterAgotados={handleFilterAgotados}
                                 isFilteringAgotados={filteredByAgotado}
                             />

@@ -154,7 +154,11 @@ export function HomePage() {
 
                 {/* Barra de búsqueda - Full width en mobile, constrained en tablet+ */}
                 <div className="mb-6 md:mb-8 mx-auto">
-                    <SearchBar onSearch={setSearchTerm} />
+                    <SearchBar
+                        onSearch={setSearchTerm}
+                        value={searchTerm}
+                        onClear={() => setSearchTerm("")}
+                    />
                 </div>
 
                 {/* Categorías - Horizontal en tablet */}
