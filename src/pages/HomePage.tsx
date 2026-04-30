@@ -13,12 +13,17 @@ export function HomePage() {
     const { products, categories, isLoading, isCategoriesLoading } = useGetAllData();
     const { user } = useAuth();
 
+    const params = new URLSearchParams(window.location.search);
+
+    const lista = params.get("lista");
+
+
 
     // Estado local
     const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-    const [listView, setListView] = useState<"list1" | "list2">("list1");
+    const [listView, setListView] = useState<"list1" | "list2">(lista === "2" ? "list2" : "list1");
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [targetListView, setTargetListView] = useState<"list1" | "list2">("list1");
 
