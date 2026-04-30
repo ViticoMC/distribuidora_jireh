@@ -1,5 +1,5 @@
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import type { Product } from "@/types";
 import { useGetAllData } from "@/hooks/useGetAllData";
 import { Header, ProductGrid, CategorySidebar, SearchBar, ProductModal, PasswordProtectedModal } from "@/components";
@@ -17,21 +17,10 @@ export function HomePage() {
     const lista = params.get("lista");
 
     const [listView, setListView] = useState<"list1" | "list2">(() => {
-        // 1. Intentar leer valor guardado
-        const saved = localStorage.getItem("listView");
-
-        if (saved === "list1" || saved === "list2") {
-            return saved;
-        }
-
-        // 2. Si no hay nada guardado, usar URL (primera visita)
         return lista === "2" ? "list2" : "list1";
     });
 
 
-    useEffect(() => {
-        localStorage.setItem("listView", listView);
-    }, [listView]);
 
 
 
