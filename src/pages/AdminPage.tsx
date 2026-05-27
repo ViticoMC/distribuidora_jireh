@@ -71,6 +71,7 @@ export function AdminPage() {
         description?: string
         price1?: number
         price2?: number
+        price_delivery?: number
         weight?: number | null
         und_weigth?: string
         active?: boolean
@@ -88,9 +89,9 @@ export function AdminPage() {
             const productData = {
                 ...data,
                 price1: data.price1,
-                price2: data.price2 || data.price1,
+                price2: data.price2 ?? data.price1,
                 category_id: data.category_id,
-                weight: data.weight || undefined,
+                weight: data.weight ?? undefined,
                 und_weigth: data.und_weigth || 'kg',
             }
 

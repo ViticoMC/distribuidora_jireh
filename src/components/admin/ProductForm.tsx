@@ -11,10 +11,12 @@ interface ProductFormProps {
         description?: string
         price1?: number
         price2?: number
+        price_delivery?: number
         weight?: number | null
         und_weigth?: string
         active?: boolean
         discount?: number
+        discount_delivery?: number
         oferta?: string
         category_id?: number
         ima_url?: string
@@ -31,10 +33,12 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
             description: product?.description || '',
             price1: product?.price1 || 0,
             price2: product?.price2 || 0,
+            price_delivery: product?.price_delivery || 0,
             weight: product?.weight || null,
             und_weigth: product?.und_weigth || 'kg',
             active: product?.active !== undefined ? product.active : true,
             discount: product?.discount || 0,
+            discount_delivery: product?.discount_delivery || 0,
             oferta: product?.oferta || '',
             category_id: product?.category_id || (categories[0]?.id || 0),
             ima_url: product?.ima_url || '',
@@ -53,10 +57,12 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                     description: product.description || '',
                     price1: product.price1 || 0,
                     price2: product.price2 || 0,
+                    price_delivery: product.price_delivery || 0,
                     weight: product.weight || null,
                     und_weigth: product.und_weigth || 'kg',
                     active: product.active !== undefined ? product.active : true,
                     discount: product.discount || 0,
+                    discount_delivery: product.discount_delivery || 0,
                     oferta: product.oferta || '',
                     category_id: product.category_id || (categories[0]?.id || 0),
                     ima_url: product.ima_url || '',
@@ -69,10 +75,12 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                     description: '',
                     price1: 0,
                     price2: 0,
+                    price_delivery: 0,
                     weight: null,
                     und_weigth: 'kg',
                     active: true,
                     discount: 0,
+                    discount_delivery: 0,
                     oferta: '',
                     category_id: categories[0]?.id || 0,
                     ima_url: '',
@@ -151,10 +159,12 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                         description: '',
                         price1: 0,
                         price2: 0,
+                        price_delivery: 0,
                         weight: null,
                         und_weigth: 'kg',
                         active: true,
                         discount: 0,
+                        discount_delivery: 0,
                         oferta: '',
                         category_id: categories[0]?.id || 0,
                         ima_url: '',
@@ -219,7 +229,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                                 type="number"
                                 step="any"
                                 min="0"
-                                value={formData.price1 || ''}
+                                value={formData.price1}
                                 onChange={(e) => setFormData({ ...formData, price1: e.target.value ? parseFloat(e.target.value) : 0 })}
                                 placeholder="0.00"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
@@ -236,8 +246,25 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                                 type="number"
                                 step="any"
                                 min="0"
-                                value={formData.price2 || ''}
+                                value={formData.price2}
                                 onChange={(e) => setFormData({ ...formData, price2: e.target.value ? parseFloat(e.target.value) : 0 })}
+                                placeholder="0.00"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                disabled={isSubmitting}
+                            />
+                        </div>
+
+                        {/* Precio Delivery */}
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                Precio para Delivery ($)
+                            </label>
+                            <input
+                                type="number"
+                                step="any"
+                                min="0"
+                                value={formData.price_delivery}
+                                onChange={(e) => setFormData({ ...formData, price_delivery: e.target.value ? parseFloat(e.target.value) : 0 })}
                                 placeholder="0.00"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                                 disabled={isSubmitting}
@@ -254,7 +281,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                                     type="number"
                                     step="0.001"
                                     min="0"
-                                    value={formData.weight || ''}
+                                    value={formData.weight ?? ''}
                                     onChange={(e) => setFormData({ ...formData, weight: e.target.value ? parseFloat(e.target.value) : null })}
                                     placeholder="0.00"
                                     className="w-40 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
@@ -283,6 +310,24 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                                 max="100"
                                 value={formData.discount}
                                 onChange={(e) => setFormData({ ...formData, discount: parseInt(e.target.value) })}
+                                placeholder="0"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                disabled={isSubmitting}
+                            />
+                        </div>
+
+                        {/* Descuento Delivery */}
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                Descuento Delivery (%)
+                            </label>
+                            <input
+                                type="number"
+                                step="1"
+                                min="0"
+                                max="100"
+                                value={formData.discount_delivery}
+                                onChange={(e) => setFormData({ ...formData, discount_delivery: parseInt(e.target.value) || 0 })}
                                 placeholder="0"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                                 disabled={isSubmitting}

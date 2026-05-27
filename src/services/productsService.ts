@@ -6,9 +6,11 @@ interface CreateProductData {
   description?: string;
   price1: number;
   price2: number;
+  price_delivery?: number;
   weight?: number;
   active?: boolean;
   discount?: number;
+  discount_delivery?: number;
   category_id: number;
   img_id?: string;
   ima_url?: string;
