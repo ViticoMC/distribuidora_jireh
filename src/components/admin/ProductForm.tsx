@@ -16,6 +16,7 @@ interface ProductFormProps {
         und_weigth?: string
         active?: boolean
         discount?: number
+        discount_delivery?: number
         oferta?: string
         category_id?: number
         ima_url?: string
@@ -37,6 +38,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
             und_weigth: product?.und_weigth || 'kg',
             active: product?.active !== undefined ? product.active : true,
             discount: product?.discount || 0,
+            discount_delivery: product?.discount_delivery || 0,
             oferta: product?.oferta || '',
             category_id: product?.category_id || (categories[0]?.id || 0),
             ima_url: product?.ima_url || '',
@@ -60,6 +62,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                     und_weigth: product.und_weigth || 'kg',
                     active: product.active !== undefined ? product.active : true,
                     discount: product.discount || 0,
+                    discount_delivery: product.discount_delivery || 0,
                     oferta: product.oferta || '',
                     category_id: product.category_id || (categories[0]?.id || 0),
                     ima_url: product.ima_url || '',
@@ -77,6 +80,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                     und_weigth: 'kg',
                     active: true,
                     discount: 0,
+                    discount_delivery: 0,
                     oferta: '',
                     category_id: categories[0]?.id || 0,
                     ima_url: '',
@@ -160,6 +164,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                         und_weigth: 'kg',
                         active: true,
                         discount: 0,
+                        discount_delivery: 0,
                         oferta: '',
                         category_id: categories[0]?.id || 0,
                         ima_url: '',
@@ -305,6 +310,24 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                                 max="100"
                                 value={formData.discount}
                                 onChange={(e) => setFormData({ ...formData, discount: parseInt(e.target.value) })}
+                                placeholder="0"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                disabled={isSubmitting}
+                            />
+                        </div>
+
+                        {/* Descuento Delivery */}
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                Descuento Delivery (%)
+                            </label>
+                            <input
+                                type="number"
+                                step="1"
+                                min="0"
+                                max="100"
+                                value={formData.discount_delivery}
+                                onChange={(e) => setFormData({ ...formData, discount_delivery: parseInt(e.target.value) || 0 })}
                                 placeholder="0"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                                 disabled={isSubmitting}

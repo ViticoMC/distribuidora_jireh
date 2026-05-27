@@ -10,6 +10,7 @@ interface CreateProductData {
   weight?: number;
   active?: boolean;
   discount?: number;
+  discount_delivery?: number;
   category_id: number;
   img_id?: string;
   ima_url?: string;

@@ -27,6 +27,7 @@ export interface Product {
   und_weigth?: string;
   active?: boolean;
   discount?: number;
+  discount_delivery?: number;
   oferta?: string;
   category_id: number;
   img_id?: string;
