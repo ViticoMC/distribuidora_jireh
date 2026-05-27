@@ -22,6 +22,7 @@ export interface Product {
   description?: string;
   price1: number;
   price2: number;
+  price_delivery?: number;
   weight?: number;
   und_weigth?: string;
   active?: boolean;

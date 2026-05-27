@@ -14,6 +14,7 @@ interface ProductFormModalProps {
         description?: string
         price1?: number
         price2?: number
+        price_delivery?: number
         weight?: number | null
         und_weigth?: string
         active?: boolean
