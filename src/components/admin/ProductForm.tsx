@@ -230,7 +230,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                                 step="any"
                                 min="0"
                                 value={formData.price1}
-                                onChange={(e) => setFormData({ ...formData, price1: e.target.value ? parseFloat(e.target.value) : 0 })}
+                                onChange={(e) => setFormData({ ...formData, price1: parseFloat(e.target.value) })}
                                 placeholder="0.00"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                                 disabled={isSubmitting}
@@ -247,7 +247,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                                 step="any"
                                 min="0"
                                 value={formData.price2}
-                                onChange={(e) => setFormData({ ...formData, price2: e.target.value ? parseFloat(e.target.value) : 0 })}
+                                onChange={(e) => setFormData({ ...formData, price2: parseFloat(e.target.value) })}
                                 placeholder="0.00"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                                 disabled={isSubmitting}
@@ -264,7 +264,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                                 step="any"
                                 min="0"
                                 value={formData.price_delivery}
-                                onChange={(e) => setFormData({ ...formData, price_delivery: e.target.value ? parseFloat(e.target.value) : 0 })}
+                                onChange={(e) => setFormData({ ...formData, price_delivery: parseFloat(e.target.value) })}
                                 placeholder="0.00"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                                 disabled={isSubmitting}
@@ -327,7 +327,7 @@ export const ProductForm = forwardRef<HTMLFormElement, ProductFormProps>(
                                 min="0"
                                 max="100"
                                 value={formData.discount_delivery}
-                                onChange={(e) => setFormData({ ...formData, discount_delivery: parseInt(e.target.value) || 0 })}
+                                onChange={(e) => setFormData({ ...formData, discount_delivery: parseInt(e.target.value) })}
                                 placeholder="0"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                                 disabled={isSubmitting}
