@@ -20,6 +20,7 @@ interface ProductFormProps {
         oferta?: string
         category_id?: number
         ima_url?: string
+        oferta_delivery?: string
     }) => Promise<void>
     isLoading?: boolean
     onFormChange?: () => void
@@ -40,6 +41,7 @@ interface FormDataState {
     oferta: string
     category_id: number
     ima_url: string
+    oferta_delivery: string
 }
 
 const createInitialState = (
@@ -70,6 +72,7 @@ const createInitialState = (
         categories?.[0]?.id ||
         0,
     ima_url: product?.ima_url || '',
+    oferta_delivery: product?.oferta_delivery || '',
 })
 
 export const ProductForm = forwardRef<
@@ -256,6 +259,7 @@ export const ProductForm = forwardRef<
                     oferta: formData.oferta.trim(),
                     category_id:
                         formData.category_id,
+                    oferta_delivery: formData.oferta_delivery.trim(),
                     ima_url: formData.ima_url,
                 }
 
@@ -525,6 +529,25 @@ export const ProductForm = forwardRef<
                                     )
                                 }
                                 placeholder="Descripción de la oferta"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                disabled={isSubmitting}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                Oferta delivery
+                            </label>
+
+                            <input
+                                type="text"
+                                value={formData.oferta_delivery}
+                                onChange={(e) =>
+                                    handleInputChange(
+                                        'oferta_delivery',
+                                        e.target.value
+                                    )
+                                }
+                                placeholder="Descripción de la oferta para delivery"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                                 disabled={isSubmitting}
                             />

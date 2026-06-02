@@ -25,8 +25,11 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete, listView
   return (
     <div
       onClick={() => handleViewDetails(product)}
-      className={`relative bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 max-w-75  ${isAdminMode ? 'h-86' : 'h-74'}  transform flex flex-col justify-between pb-2 p-3 `}>
+      className={` ${product.active ? '' : 'grayscale-75'} relative bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 max-w-75  ${isAdminMode ? 'h-86' : 'h-74'}  transform flex flex-col justify-between pb-2 p-3 `}>
       {/* Imagen */}
+      {
+        !product.active && <div className='bg-gray-500 text-white w-[90%] p-1 absolute z-100 top-4 flex justify-center  items-center'>Agotado</div>
+      }
       <div>
         <div className="relative w-full h-40  overflow-hidden">
           <img

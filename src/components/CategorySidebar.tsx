@@ -16,7 +16,6 @@ export function CategorySidebar({
 }: CategorySidebarProps) {
   // Ordenar categorías por el campo orden, manteniendo "Todas" al inicio
 
-  console.log("Categorías recibidas en CategorySidebar:", categories);
   const sortedCategories = useMemo(() => {
     const allCategory = categories.find((c) => c.id === 0 || c.name === 'Todas')
     const otherCategories = categories.filter((c) => c.id !== 0 && c.name !== 'Todas')

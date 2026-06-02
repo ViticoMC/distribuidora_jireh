@@ -32,6 +32,7 @@ interface useGetAllDataReturn {
     category_id: number;
     ima_url?: string;
     img_id?: string;
+    oferta_delivery?: string;
   }) => Promise<void>;
   updateProductAndRefresh: (
     id: string,
@@ -48,6 +49,7 @@ interface useGetAllDataReturn {
       category_id?: number;
       ima_url?: string;
       img_id?: string;
+      oferta_delivery?: string;
     },
   ) => Promise<void>;
   deleteProductAndRefresh: (id: string) => Promise<void>;

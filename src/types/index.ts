@@ -34,6 +34,7 @@ export interface Product {
   ima_url?: string;
   created_at?: string;
   stock?: number;
+  oferta_delivery?: string;
 }
 
 export interface Category {

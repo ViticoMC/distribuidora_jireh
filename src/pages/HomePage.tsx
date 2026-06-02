@@ -49,9 +49,9 @@ export function HomePage() {
                 normalizeString(product.name).includes(normalizedSearch) ||
                 normalizeString(product.description || '').includes(normalizedSearch);
 
-            const isActive = product.active;
 
-            return matchesCategory && matchesSearch && isActive;
+
+            return matchesCategory && matchesSearch;
         });
 
         return [...filtered].sort((a, b) => {

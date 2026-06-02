@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
-import { BarChart3, Package, Folder, Plus } from 'lucide-react'
+import { BarChart3, Package, Folder, Plus, Percent } from 'lucide-react'
 import type { Product, Category } from '@/types'
 import {
     AdminHeader,
@@ -9,8 +9,9 @@ import {
 } from '@/components/admin'
 import { CategoryCard, ConfirmDeleteModal, ProductGrid, SearchBar, CategorySidebar } from '@/components'
 import { useGetAllData } from '@/hooks/useGetAllData'
+import AumentoPrecio from '@/components/admin/AumentoPrecio'
 
-type TabType = 'dashboard' | 'products' | 'categories'
+type TabType = 'dashboard' | 'products' | 'categories' | 'delivery'
 
 export function AdminPage() {
     const scrollPositionRef = useRef(0)
@@ -78,6 +79,7 @@ export function AdminPage() {
         discount?: number
         category_id?: number
         ima_url?: string
+        oferta_delivery?: string
     }) => {
         try {
             // Validar campos requeridos
@@ -93,6 +95,7 @@ export function AdminPage() {
                 category_id: data.category_id,
                 weight: data.weight ?? undefined,
                 und_weigth: data.und_weigth || 'kg',
+                oferta_delivery: data.oferta_delivery || '',
             }
 
             if (editingProduct) {
@@ -331,6 +334,7 @@ export function AdminPage() {
                         { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
                         { id: 'products', label: 'Productos', icon: Package },
                         { id: 'categories', label: 'Categorías', icon: Folder },
+                        { id: 'delivery', label: 'Aumento % ', icon: Percent }
                     ].map((tab) => {
                         const Icon = tab.icon
                         return (
@@ -459,6 +463,18 @@ export function AdminPage() {
                         )}
                     </div>
                 )}
+
+                {
+                    activeTab === 'delivery' && (
+                        <AumentoPrecio
+                            categories={categories}
+                            isCategoriesLoading={isCategoriesLoading}
+                            isLoading={isLoading}
+                            products={products}
+                            updateProductAndRefresh={updateProductAndRefresh}
+                        />
+                    )
+                }
             </main>
 
             {/* Modal de confirmación de eliminación */}
