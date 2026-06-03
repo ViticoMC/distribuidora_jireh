@@ -55,6 +55,10 @@ export function HomePage() {
         });
 
         return [...filtered].sort((a, b) => {
+            // 0. Productos desactivados al fondo
+            if (a.active && !b.active) return -1;
+            if (!a.active && b.active) return 1;
+
             const hasOfferA =
                 (a.oferta && a.oferta.trim() !== "") ||
                 (a.discount && a.discount > 0);
@@ -68,8 +72,9 @@ export function HomePage() {
             if (!hasOfferA && hasOfferB) return 1;
 
             // 2. Categoría (orden)
-            const categoryA = categories.find(c => c.id === a.category_id)
-            const categoryB = categories.find(c => c.id === b.category_id)
+            const categoryA = categories.find(c => c.id === a.category_id);
+            const categoryB = categories.find(c => c.id === b.category_id);
+
             const ordenA = categoryA?.orden ?? Number.MAX_VALUE;
             const ordenB = categoryB?.orden ?? Number.MAX_VALUE;
 
