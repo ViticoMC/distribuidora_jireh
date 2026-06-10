@@ -9,9 +9,10 @@ interface ProductModalProps {
     onClose: () => void
     onProductUpdated?: (productId: string) => void
     user: User | null
+    listView: "list1" | "list2"
 }
 
-export function ProductModal({ product, onClose, onProductUpdated, user }: ProductModalProps) {
+export function ProductModal({ product, onClose, onProductUpdated, user, listView }: ProductModalProps) {
     const [isOutOfStock, setIsOutOfStock] = useState(product.stock === 0)
     const [isSaving, setIsSaving] = useState(false)
 
@@ -58,7 +59,7 @@ export function ProductModal({ product, onClose, onProductUpdated, user }: Produ
 
                 {/* Contenido - Usar ProductCard sin botón Ver */}
                 <div className="p-2 flex justify-center">
-                    <ProductCard product={product} />
+                    <ProductCard product={product} listView={listView} />
                 </div>
 
                 {/* Estado agotado */}

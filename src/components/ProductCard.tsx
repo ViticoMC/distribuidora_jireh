@@ -9,7 +9,7 @@ interface ProductCardProps {
   listView?: "list1" | "list2"
 }
 
-export function ProductCard({ product, onViewDetails, onEdit, onDelete, listView = "list1" }: ProductCardProps) {
+export function ProductCard({ product, onViewDetails, onEdit, onDelete, listView }: ProductCardProps) {
   const isAdminMode = onEdit || onDelete
   const handleViewDetails = (product: Product) => {
     if (isAdminMode) return;

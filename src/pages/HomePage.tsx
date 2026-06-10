@@ -212,6 +212,7 @@ export function HomePage() {
                     onClose={() => setSelectedProduct(null)}
                     onProductUpdated={handleProductOutOfStock}
                     user={user}
+                    listView={listView}
                 />
             )}
 
