@@ -1,5 +1,5 @@
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import type { Product } from "@/types";
 import { useGetAllData } from "@/hooks/useGetAllData";
 import { Header, ProductGrid, CategorySidebar, SearchBar, ProductModal, PasswordProtectedModal } from "@/components";
@@ -15,14 +15,13 @@ export function HomePage() {
 
     const params = new URLSearchParams(window.location.search);
     const lista = params.get("lista");
+    const categoriaParam = params.get("categoria");
 
     const [listView, setListView] = useState<"list1" | "list2">(() => {
         return lista === "2" ? "list2" : "list1";
     });
 
-
-
-
+    const productsRef = useRef<HTMLDivElement>(null);
 
     // Estado local
     const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
@@ -36,6 +35,20 @@ export function HomePage() {
 
     const normalizeString = (str: string) =>
         str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+
+    useEffect(() => {
+        if (!isCategoriesLoading && categories.length > 0 && categoriaParam) {
+            const matchedCategory = categories.find(
+                cat => cat.id !== 0 && cat.name.toLowerCase() === categoriaParam.toLowerCase()
+            );
+            if (matchedCategory) {
+                setSelectedCategoryId(matchedCategory.id);
+                setTimeout(() => {
+                    productsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        }
+    }, [isCategoriesLoading, categories, categoriaParam]);
 
     const filteredProducts = useMemo(() => {
         const normalizedSearch = normalizeString(searchTerm);
@@ -175,33 +188,35 @@ export function HomePage() {
                     />
                 </div>
 
-                {/* Categorías - Horizontal en tablet */}
-                <CategorySidebar
-                    categories={categories}
-                    selectedCategoryId={selectedCategoryId}
-                    onSelectCategory={setSelectedCategoryId}
-                    isLoading={isCategoriesLoading}
-                />
+                <div ref={productsRef}>
+                    {/* Categorías - Horizontal en tablet */}
+                    <CategorySidebar
+                        categories={categories}
+                        selectedCategoryId={selectedCategoryId}
+                        onSelectCategory={setSelectedCategoryId}
+                        isLoading={isCategoriesLoading}
+                    />
 
-                {/* Imagen de categoría seleccionada */}
-                {selectedCategory?.img_url && (
-                    <div className="mb-6 md:mb-8 mx-auto">
-                        <img
-                            src={selectedCategory.img_url}
-                            alt={selectedCategory.name}
-                            className=" h-32 w-32 object-cover rounded-lg shadow-md"
+                    {/* Imagen de categoría seleccionada */}
+                    {selectedCategory?.img_url && (
+                        <div className="mb-6 md:mb-8 mx-auto">
+                            <img
+                                src={selectedCategory.img_url}
+                                alt={selectedCategory.name}
+                                className=" h-32 w-32 object-cover rounded-lg shadow-md"
+                            />
+                        </div>
+                    )}
+
+                    <div className=" max-w-[90vw]">
+                        {/* Grid de productos */}
+                        <ProductGrid
+                            products={filteredProducts}
+                            isLoading={isLoading}
+                            onViewDetails={handleViewDetails}
+                            listView={listView}
                         />
                     </div>
-                )}
-
-                <div className=" max-w-[90vw]">
-                    {/* Grid de productos */}
-                    <ProductGrid
-                        products={filteredProducts}
-                        isLoading={isLoading}
-                        onViewDetails={handleViewDetails}
-                        listView={listView}
-                    />
                 </div>
             </main>
 
