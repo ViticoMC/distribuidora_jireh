@@ -80,6 +80,7 @@ export function AdminPage() {
         category_id?: number
         ima_url?: string
         oferta_delivery?: string
+        tags?: string[]
     }) => {
         try {
             // Validar campos requeridos
@@ -96,6 +97,7 @@ export function AdminPage() {
                 weight: data.weight ?? undefined,
                 und_weigth: data.und_weigth || 'kg',
                 oferta_delivery: data.oferta_delivery || '',
+                tags: data.tags ?? [],
             }
 
             if (editingProduct) {

@@ -18,14 +18,27 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete, listView
 
   const isOfert = product.oferta ? product.oferta :
     (product.discount && product.discount > 0) ? `Oferta` : false
+  const hasOffer = Boolean(isOfert)
 
   // Determinar qué precio mostrar según la lista seleccionada
   const selectedPrice = listView === "list2" && product.price2 ? product.price2 : product.price1
 
-  return (
+  const marqueeText = `${isOfert} ★ `.repeat(10)
+
+  const marquee = hasOffer ? (
+    <div className="-mx-3 -mt-3 mb-2 overflow-hidden bg-red-600 rounded-t-[9px]">
+      <div className="flex w-max whitespace-nowrap animate-hf-marquee py-0.5">
+        <span className="px-2 text-xs font-extrabold uppercase tracking-widest text-white">{marqueeText}</span>
+        <span className="px-2 text-xs font-extrabold uppercase tracking-widest text-white">{marqueeText}</span>
+      </div>
+    </div>
+  ) : null
+
+  const cardBody = (
     <div
       onClick={() => handleViewDetails(product)}
-      className={` ${product.active ? '' : 'grayscale-75'} relative bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 max-w-75  ${isAdminMode ? 'h-86' : 'h-74'}  transform flex flex-col justify-between pb-2 p-3 `}>
+      className={` ${product.active ? '' : 'grayscale-75'} relative bg-white ${hasOffer ? 'rounded-[9px]' : 'rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 max-w-75'}  ${isAdminMode ? 'min-h-86' : 'min-h-74'}  transform flex flex-col justify-between pb-2 p-3 `}>
+      {marquee}
       {/* Imagen */}
       {
         !product.active && <div className='bg-gray-500 text-white w-[90%] p-1 absolute z-100 top-4 flex justify-center  items-center'>Agotado</div>
@@ -38,13 +51,6 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete, listView
             className="w-full h-40 object-cover transition-transform duration-300 hover:scale-105"
           />
         </div>
-        {
-          isOfert ? (
-            <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
-              {isOfert}
-            </div>
-          ) : null
-        }
 
 
         {/* Contenido */}
@@ -63,41 +69,53 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete, listView
 
 
 
-      {/* Precio y Peso */}
+      {/* Precio y Peso / Tags */}
       <div className="flex flex-col   gap-1 mb-1 ">
-        <div className="bg-blue-50 rounded-lg text-sm  flex items-center justify-start p-1 gap-2">
-          <span className="text-gray-700 font-semibold">Precio :</span>
-          <div className="flex items-center gap-2">
-            {product.discount && product.discount > 0 ? (
-              <>
-                <div className="relative inline-block">
-                  <span className="line-through text-gray-500 text-sm">
+        {product.tags && product.tags.length > 0 ? (
+          product.tags.map((tag, index) => (
+            <div
+              key={index}
+              className="bg-blue-50 rounded-lg text-sm  flex items-center justify-start p-1 gap-2"
+            >
+              <span className="font-bold text-blue-600">{tag}</span>
+            </div>
+          ))
+        ) : (
+          <>
+            <div className="bg-blue-50 rounded-lg text-sm  flex items-center justify-start p-1 gap-2">
+              <span className="text-gray-700 font-semibold">Precio :</span>
+              <div className="flex items-center gap-2">
+                {product.discount && product.discount > 0 ? (
+                  <>
+                    <div className="relative inline-block">
+                      <span className="line-through text-gray-500 text-sm">
+                        ${selectedPrice.toFixed(2)}
+                      </span>
+                      <div className="absolute -top-4 left-1 bg-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-bold shadow-lg whitespace-nowrap">
+                        -{product.discount}%
+                      </div>
+                    </div>
+                    <span className="font-bold text-red-600 text-sm">
+                      ${(selectedPrice * (1 - product.discount / 100)).toFixed(2)}
+                    </span>
+                  </>
+                ) : (
+                  <span className="font-bold text-blue-600">
                     ${selectedPrice.toFixed(2)}
                   </span>
-                  <div className="absolute -top-4 left-1 bg-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-bold shadow-lg whitespace-nowrap">
-                    -{product.discount}%
-                  </div>
-                </div>
-                <span className="font-bold text-red-600 text-sm">
-                  ${(selectedPrice * (1 - product.discount / 100)).toFixed(2)}
+                )}
+              </div>
+            </div>
+
+            {product.weight && product.weight > 0 && (
+              <div className="bg-blue-50 rounded-lg text-sm flex items-center justify-start  p-1  gap-3">
+                <span className="text-gray-700 font-semibold">Peso:</span>
+                <span className="text-sm text-gray-600 font-medium">
+                  {product.weight} {product.und_weigth || 'kg'}
                 </span>
-              </>
-            ) : (
-              <span className="font-bold text-blue-600">
-                ${selectedPrice.toFixed(2)}
-              </span>
+              </div>
             )}
-          </div>
-        </div>
-
-
-        {product.weight && product.weight > 0 && (
-          <div className="bg-blue-50 rounded-lg text-sm flex items-center justify-start  p-1  gap-3">
-            <span className="text-gray-700 font-semibold">Peso:</span>
-            <span className="text-sm text-gray-600 font-medium">
-              {product.weight} {product.und_weigth || 'kg'}
-            </span>
-          </div>
+          </>
         )}
       </div>
 
@@ -122,6 +140,17 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete, listView
           )}
         </div>
       ) : null}
+    </div>
+  )
+
+  // Productos con oferta: borde degradado animado + marquee "OFERTA" en scroll infinito
+  if (!hasOffer) return cardBody
+
+  return (
+    <div className="relative max-w-75 rounded-xl p-[3px] overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+      {/* Borde degradado girando infinitamente */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[300%] aspect-square bg-[conic-gradient(from_0deg,#ef4444_0deg,#f59e0b_90deg,#ef4444_180deg,#f59e0b_270deg,#ef4444_360deg)] animate-[spin_4s_linear_infinite]" />
+      {cardBody}
     </div>
   )
 }

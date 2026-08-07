@@ -22,6 +22,7 @@ interface ProductFormModalProps {
         oferta?: string
         category_id?: number
         ima_url?: string
+        tags?: string[]
     }) => Promise<void>
     isLoading?: boolean
 }

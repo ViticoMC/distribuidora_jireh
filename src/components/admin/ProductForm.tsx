@@ -21,6 +21,7 @@ interface ProductFormProps {
         category_id?: number
         ima_url?: string
         oferta_delivery?: string
+        tags?: string[]
     }) => Promise<void>
     isLoading?: boolean
     onFormChange?: () => void
@@ -42,6 +43,7 @@ interface FormDataState {
     category_id: number
     ima_url: string
     oferta_delivery: string
+    tags: string
 }
 
 const createInitialState = (
@@ -73,6 +75,7 @@ const createInitialState = (
         0,
     ima_url: product?.ima_url || '',
     oferta_delivery: product?.oferta_delivery || '',
+    tags: product?.tags?.length ? product.tags.join(', ') : '',
 })
 
 export const ProductForm = forwardRef<
@@ -203,6 +206,13 @@ export const ProductForm = forwardRef<
                 : parsed
         }
 
+        const parseTags = (value: string) => {
+            return value
+                .split(',')
+                .map((tag) => tag.trim())
+                .filter((tag) => tag !== '')
+        }
+
         const handleSubmit = async (
             e: React.FormEvent
         ) => {
@@ -260,6 +270,7 @@ export const ProductForm = forwardRef<
                     category_id:
                         formData.category_id,
                     oferta_delivery: formData.oferta_delivery.trim(),
+                    tags: parseTags(formData.tags),
                     ima_url: formData.ima_url,
                 }
 
@@ -551,6 +562,30 @@ export const ProductForm = forwardRef<
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                                 disabled={isSubmitting}
                             />
+                        </div>
+
+                        {/* Tags */}
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                Tags
+                            </label>
+
+                            <input
+                                type="text"
+                                value={formData.tags}
+                                onChange={(e) =>
+                                    handleInputChange(
+                                        'tags',
+                                        e.target.value
+                                    )
+                                }
+                                placeholder="500ml $169, 250ml $100"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                disabled={isSubmitting}
+                            />
+                            <p className="mt-1 text-xs text-gray-500">
+                                Separa cada presentación con una coma. Si dejas este campo vacío se mostrará el precio y el peso.
+                            </p>
                         </div>
 
                         {/* Categoría */}

@@ -98,3 +98,17 @@ img {
 .aspect-video {
   aspect-ratio: 16 / 9;
 }
+
+/* Marquee de oferta con scroll infinito */
+@keyframes hf-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-hf-marquee {
+  animation: hf-marquee 20s linear infinite;
+}

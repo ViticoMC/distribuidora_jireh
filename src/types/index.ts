@@ -35,6 +35,7 @@ export interface Product {
   created_at?: string;
   stock?: number;
   oferta_delivery?: string;
+  tags?: string[];
 }
 
 export interface Category {

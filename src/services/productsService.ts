@@ -14,6 +14,7 @@ interface CreateProductData {
   category_id: number;
   img_id?: string;
   ima_url?: string;
+  tags?: string[];
 }
 
 interface SupabaseError extends Error {
