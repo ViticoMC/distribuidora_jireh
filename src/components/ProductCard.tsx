@@ -72,14 +72,35 @@ export function ProductCard({ product, onViewDetails, onEdit, onDelete, listView
       {/* Precio y Peso / Tags */}
       <div className="flex flex-col   gap-1 mb-1 ">
         {product.tags && product.tags.length > 0 ? (
-          product.tags.map((tag, index) => (
-            <div
-              key={index}
-              className="bg-blue-50 rounded-lg text-sm  flex items-center justify-start p-1 gap-2"
-            >
-              <span className="font-bold text-blue-600">{tag}</span>
-            </div>
-          ))
+          product.tags.map((tag, index) => {
+            const indexToSeparate = tag.indexOf("$")
+            let pricePart
+            let weightPart
+            if (indexToSeparate != -1) {
+              pricePart = tag.slice(0, indexToSeparate)
+              weightPart = tag.slice(indexToSeparate)
+            }
+            return pricePart && weightPart ? (
+              <div
+                key={index}
+                className="bg-blue-50 rounded-lg text-sm  flex items-center justify-start p-1 gap-2"
+              >
+                <span className="font-bold text-black">{pricePart}</span>
+
+                <span className="font-bold text-blue-600">{weightPart}</span>
+              </div>
+            ) : (
+
+
+              <div
+                key={index}
+                className="bg-blue-50 rounded-lg text-sm  flex items-center justify-start p-1 gap-2"
+              >
+                <span className="font-bold text-blue-600">{tag}</span>
+              </div>
+            )
+
+          })
         ) : (
           <>
             <div className="bg-blue-50 rounded-lg text-sm  flex items-center justify-start p-1 gap-2">
